@@ -28,7 +28,7 @@ final class DirectChildRelationship extends Request implements Cacheable, Pagina
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/direct-child-relationships';
+        return '/lei-records/'.rawurlencode($this->id).'/direct-child-relationships';
     }
 
     protected function defaultQuery(): array

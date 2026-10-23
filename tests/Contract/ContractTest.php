@@ -33,7 +33,7 @@ function sdkOperations(): array
 
         $endpoint = $request->resolveEndpoint();
         $url = str_starts_with($endpoint, 'https://') ? $endpoint : $baseUrl.$endpoint;
-        $operations[$class] = $request->getMethod()->value.' '.parse_url($url, PHP_URL_PATH);
+        $operations[$class] = $request->getMethod()->value.' '.rawurldecode((string) parse_url($url, PHP_URL_PATH));
     }
 
     return $operations;

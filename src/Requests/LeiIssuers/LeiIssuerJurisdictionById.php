@@ -25,7 +25,7 @@ final class LeiIssuerJurisdictionById extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-issuers/'.$this->id.'/jurisdictions';
+        return '/lei-issuers/'.rawurlencode($this->id).'/jurisdictions';
     }
 
     /**

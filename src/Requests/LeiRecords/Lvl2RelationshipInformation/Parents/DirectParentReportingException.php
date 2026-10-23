@@ -25,7 +25,7 @@ final class DirectParentReportingException extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/direct-parent-reporting-exception';
+        return '/lei-records/'.rawurlencode($this->id).'/direct-parent-reporting-exception';
     }
 
     public function createDtoFromResponse(Response $response): ReportingException

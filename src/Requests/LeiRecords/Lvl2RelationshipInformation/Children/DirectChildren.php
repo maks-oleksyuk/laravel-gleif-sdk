@@ -28,7 +28,7 @@ final class DirectChildren extends Request implements Cacheable, Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/direct-children';
+        return '/lei-records/'.rawurlencode($this->id).'/direct-children';
     }
 
     protected function defaultQuery(): array

@@ -34,7 +34,7 @@ final class FieldModifications extends Request implements Cacheable, Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/field-modifications';
+        return '/lei-records/'.rawurlencode($this->id).'/field-modifications';
     }
 
     protected function defaultQuery(): array

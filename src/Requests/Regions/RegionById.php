@@ -25,7 +25,7 @@ final class RegionById extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/regions/'.$this->id;
+        return '/regions/'.rawurlencode($this->id);
     }
 
     public function createDtoFromResponse(Response $response): Region

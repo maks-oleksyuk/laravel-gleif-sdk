@@ -25,7 +25,7 @@ final class VLeiIssuerById extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/vlei-issuers/'.$this->id;
+        return '/vlei-issuers/'.rawurlencode($this->id);
     }
 
     public function createDtoFromResponse(Response $response): VLeiIssuer

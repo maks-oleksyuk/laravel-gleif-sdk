@@ -25,7 +25,7 @@ final class SuccessorEntity extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/successor-entity';
+        return '/lei-records/'.rawurlencode($this->id).'/successor-entity';
     }
 
     public function createDtoFromResponse(Response $response): LeiRecord

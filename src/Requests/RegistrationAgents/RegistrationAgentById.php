@@ -25,7 +25,7 @@ final class RegistrationAgentById extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/registration-agents/'.$this->id;
+        return '/registration-agents/'.rawurlencode($this->id);
     }
 
     public function createDtoFromResponse(Response $response): RegistrationAgent

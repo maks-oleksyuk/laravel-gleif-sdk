@@ -25,7 +25,7 @@ final class FieldById extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/fields/'.$this->id;
+        return '/fields/'.rawurlencode($this->id);
     }
 
     public function createDtoFromResponse(Response $response): Field

@@ -25,7 +25,7 @@ final class CountryCodeById extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/countries/'.$this->id;
+        return '/countries/'.rawurlencode($this->id);
     }
 
     public function createDtoFromResponse(Response $response): Country

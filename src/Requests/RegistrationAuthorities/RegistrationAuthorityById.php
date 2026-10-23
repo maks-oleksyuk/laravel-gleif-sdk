@@ -25,7 +25,7 @@ final class RegistrationAuthorityById extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/registration-authorities/'.$this->id;
+        return '/registration-authorities/'.rawurlencode($this->id);
     }
 
     public function createDtoFromResponse(Response $response): RegistrationAuthority

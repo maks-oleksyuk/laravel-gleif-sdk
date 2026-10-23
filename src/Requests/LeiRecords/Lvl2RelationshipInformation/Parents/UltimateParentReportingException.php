@@ -25,7 +25,7 @@ final class UltimateParentReportingException extends Request implements Cacheabl
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/ultimate-parent-reporting-exception';
+        return '/lei-records/'.rawurlencode($this->id).'/ultimate-parent-reporting-exception';
     }
 
     public function createDtoFromResponse(Response $response): ReportingException

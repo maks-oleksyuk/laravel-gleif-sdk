@@ -25,7 +25,7 @@ final class LeiIssuer extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/lei-issuer';
+        return '/lei-records/'.rawurlencode($this->id).'/lei-issuer';
     }
 
     public function createDtoFromResponse(Response $response): LeiIssuerDto

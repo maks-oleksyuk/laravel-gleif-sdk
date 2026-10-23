@@ -28,7 +28,7 @@ final class UltimateChildren extends Request implements Cacheable, Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/ultimate-children';
+        return '/lei-records/'.rawurlencode($this->id).'/ultimate-children';
     }
 
     protected function defaultQuery(): array

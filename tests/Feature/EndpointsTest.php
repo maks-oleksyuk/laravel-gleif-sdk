@@ -124,6 +124,15 @@ test('endpoint sends the right URL and maps the response', function (Closure $ca
     'registrationAgent()->find()' => [fn (GleifConnector $gleif): Response => $gleif->registrationAgent()->find('X'), '/registration-agents/X', 'registration-agent', false, RegistrationAgent::class],
 ]);
 
+test('path values are URL-encoded so they cannot change the path or query', function (): void {
+    $connector = new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['data' => []])]));
+
+    $uri = $connector->leiRecord()->isins('../countries?x=1#y')->getPsrRequest()->getUri();
+
+    expect($uri->getPath())->toBe('/api/v1/lei-records/..%2Fcountries%3Fx%3D1%23y/isins')
+        ->and($uri->getQuery())->toBeEmpty();
+});
+
 test('optional filters are left out of the query', function (): void {
     $connector = new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['data' => []])]));
 

@@ -25,7 +25,7 @@ final class OfficialOrganizationalRoleById extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/official-organizational-roles/'.$this->id;
+        return '/official-organizational-roles/'.rawurlencode($this->id);
     }
 
     public function createDtoFromResponse(Response $response): OfficialOrganizationalRole

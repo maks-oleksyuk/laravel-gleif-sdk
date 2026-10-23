@@ -28,7 +28,7 @@ final class UltimateChildRelationship extends Request implements Cacheable, Pagi
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/ultimate-child-relationships';
+        return '/lei-records/'.rawurlencode($this->id).'/ultimate-child-relationships';
     }
 
     protected function defaultQuery(): array

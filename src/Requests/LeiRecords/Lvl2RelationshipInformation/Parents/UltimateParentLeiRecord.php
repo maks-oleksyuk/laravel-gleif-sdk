@@ -25,7 +25,7 @@ final class UltimateParentLeiRecord extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/ultimate-parent';
+        return '/lei-records/'.rawurlencode($this->id).'/ultimate-parent';
     }
 
     public function createDtoFromResponse(Response $response): LeiRecord

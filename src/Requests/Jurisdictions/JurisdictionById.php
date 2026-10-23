@@ -25,7 +25,7 @@ final class JurisdictionById extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/jurisdictions/'.$this->id;
+        return '/jurisdictions/'.rawurlencode($this->id);
     }
 
     public function createDtoFromResponse(Response $response): Jurisdiction

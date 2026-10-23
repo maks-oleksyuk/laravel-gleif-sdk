@@ -25,7 +25,7 @@ final class AssociatedEntity extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/associated-entity';
+        return '/lei-records/'.rawurlencode($this->id).'/associated-entity';
     }
 
     public function createDtoFromResponse(Response $response): LeiRecord

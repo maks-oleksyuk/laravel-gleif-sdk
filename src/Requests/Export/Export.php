@@ -22,7 +22,7 @@ final class Export extends SoloRequest
 
     public function resolveEndpoint(): string
     {
-        return 'https://api.gleif.org/export/v1/lei-records.'.$this->format;
+        return 'https://api.gleif.org/export/v1/lei-records.'.rawurlencode($this->format);
     }
 
     protected function defaultQuery(): array

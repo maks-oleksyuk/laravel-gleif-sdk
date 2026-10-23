@@ -25,7 +25,7 @@ final class ManagingLou extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/managing-lou';
+        return '/lei-records/'.rawurlencode($this->id).'/managing-lou';
     }
 
     public function createDtoFromResponse(Response $response): LeiRecord

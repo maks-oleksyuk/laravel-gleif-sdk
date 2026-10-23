@@ -25,7 +25,7 @@ final class EntityLegalFormById extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/entity-legal-forms/'.$this->id;
+        return '/entity-legal-forms/'.rawurlencode($this->id);
     }
 
     public function createDtoFromResponse(Response $response): EntityLegalForm

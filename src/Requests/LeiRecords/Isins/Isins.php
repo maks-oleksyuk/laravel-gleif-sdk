@@ -28,7 +28,7 @@ final class Isins extends Request implements Cacheable, Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/isins';
+        return '/lei-records/'.rawurlencode($this->id).'/isins';
     }
 
     protected function defaultQuery(): array

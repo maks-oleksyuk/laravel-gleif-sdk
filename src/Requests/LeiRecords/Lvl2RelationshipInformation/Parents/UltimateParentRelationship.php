@@ -25,7 +25,7 @@ final class UltimateParentRelationship extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/ultimate-parent-relationship';
+        return '/lei-records/'.rawurlencode($this->id).'/ultimate-parent-relationship';
     }
 
     public function createDtoFromResponse(Response $response): RelationshipRecord

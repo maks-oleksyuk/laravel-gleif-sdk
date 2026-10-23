@@ -25,7 +25,7 @@ final class DirectParentLeiRecord extends Request implements Cacheable
 
     public function resolveEndpoint(): string
     {
-        return '/lei-records/'.$this->id.'/direct-parent';
+        return '/lei-records/'.rawurlencode($this->id).'/direct-parent';
     }
 
     public function createDtoFromResponse(Response $response): LeiRecord
