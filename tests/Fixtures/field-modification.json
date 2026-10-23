@@ -1,0 +1,14 @@
+{
+  "type": "field-modifications",
+  "id": "59a788be-51ba-4fc7-b5fc-4b9c24169460",
+  "attributes": {
+    "lei": "7LTWFZYICNSX8D621K86",
+    "recordType": "LEI",
+    "modificationType": "UPDATE",
+    "field": "/lei:LEIData/lei:LEIRecords/lei:LEIRecord/lei:Registration/lei:NextRenewalDate",
+    "date": "2026-04-07T16:00:00Z",
+    "valueOld": "2026-06-02T08:47:59+02:00",
+    "valueNew": "2027-06-02T08:47:59+02:00",
+    "context": null
+  }
+}

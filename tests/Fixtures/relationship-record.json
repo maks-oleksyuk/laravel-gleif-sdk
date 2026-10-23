@@ -1,0 +1,52 @@
+{
+  "type": "relationship-records",
+  "id": "52990021U40DYSDLV579|LEI|IS_DIRECTLY_CONSOLIDATED_BY|10|1957fdbf14b5b62b819e75425bda86d6b4e583c5cceff76ee3e55846b95e242c|",
+  "attributes": {
+    "validFrom": "2024-05-15T08:00:00Z",
+    "validTo": null,
+    "relationship": {
+      "startNode": {
+        "id": "52990021U40DYSDLV579",
+        "type": "LEI"
+      },
+      "endNode": {
+        "id": "7LTWFZYICNSX8D621K86",
+        "type": "LEI"
+      },
+      "type": "IS_DIRECTLY_CONSOLIDATED_BY",
+      "status": "ACTIVE",
+      "periods": [
+        {
+          "startDate": "2021-12-31T23:00:00Z",
+          "endDate": "2022-12-30T23:00:00Z",
+          "type": "ACCOUNTING_PERIOD"
+        },
+        {
+          "startDate": "2019-04-29T22:00:00Z",
+          "type": "RELATIONSHIP_PERIOD"
+        },
+        {
+          "startDate": "2023-03-16T23:00:00Z",
+          "type": "DOCUMENT_FILING_PERIOD"
+        }
+      ]
+    },
+    "registration": {
+      "initialRegistrationDate": "2019-05-15T13:44:32Z",
+      "lastUpdateDate": "2024-05-14T23:30:04Z",
+      "status": "LAPSED",
+      "nextRenewalDate": "2024-05-14T22:00:00Z",
+      "managingLou": "5299000J2N45DDNE4Y28",
+      "corroborationLevel": "FULLY_CORROBORATED",
+      "corroborationDocuments": "ACCOUNTS_FILING",
+      "corroborationReference": null
+    },
+    "extension": {
+      "deletedAt": null
+    }
+  },
+  "relationships": {
+    "start-node": {},
+    "end-node": {}
+  }
+}

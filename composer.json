@@ -1,0 +1,77 @@
+{
+    "name": "oleksyuk/laravel-gleif-sdk",
+    "description": "Laravel SDK for the GLEIF LEI API, built on Saloon",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "gleif",
+        "lei",
+        "legal-entity-identifier",
+        "laravel",
+        "saloon",
+        "api-client",
+        "sdk"
+    ],
+    "authors": [
+        {
+            "name": "Maks Oleksyuk",
+            "email": "maksym.oleksyuk@gmail.com",
+            "role": "Maintainer"
+        }
+    ],
+    "homepage": "https://github.com/maks-oleksyuk/laravel-gleif-sdk",
+    "support": {
+        "issues": "https://github.com/maks-oleksyuk/laravel-gleif-sdk/issues",
+        "source": "https://github.com/maks-oleksyuk/laravel-gleif-sdk"
+    },
+    "require": {
+        "php": "^8.4",
+        "illuminate/cache": "^13.0",
+        "illuminate/support": "^13.0",
+        "saloonphp/cache-plugin": "^3.3",
+        "saloonphp/pagination-plugin": "^2.3",
+        "saloonphp/rate-limit-plugin": "^2.5.3",
+        "saloonphp/saloon": "^4.5"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.13.1",
+        "laravel/pint": "^1.32.1",
+        "orchestra/testbench": "^11.3",
+        "pestphp/pest": "^5.3.3",
+        "pestphp/pest-plugin-phpstan": "^5.2.2",
+        "pestphp/pest-plugin-rector": "^5.0.6",
+        "pestphp/pest-plugin-type-coverage": "^5.0.3",
+        "phpstan/extension-installer": "^1.4.3",
+        "phpstan/phpstan-deprecation-rules": "^2.0.5",
+        "rector/rector": "^2.7"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Oleksyuk\\Gleif\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Oleksyuk\\Gleif\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "aliases": {
+                "Gleif": "Oleksyuk\\Gleif\\Facades\\Gleif"
+            },
+            "providers": [
+                "Oleksyuk\\Gleif\\GleifServiceProvider"
+            ]
+        }
+    }
+}

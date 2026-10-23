@@ -1,0 +1,26 @@
+{
+  "type": "fields",
+  "id": "LEIREC_BRANCH_ENTITY_STATUS",
+  "attributes": {
+    "field": "branches.entityStatus",
+    "label": "Branch Entity Status",
+    "data_type": "ENUM",
+    "enum": [
+      "ACTIVE",
+      "INACTIVE",
+      "NULL"
+    ],
+    "resource": null,
+    "sortable": true,
+    "operators": [
+      "MATCH",
+      "NOT_MATCH",
+      "IN"
+    ],
+    "contexts": [
+      "FILTER_LEIREC_BRANCHES"
+    ],
+    "jsonPath": null,
+    "xpath": null
+  }
+}

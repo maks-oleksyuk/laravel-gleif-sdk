@@ -1,0 +1,151 @@
+version: 3
+
+env:
+  PHP_BIN: '{{.PHP_BIN | default "$(which php)"}}'
+  COMPOSER_BIN: '{{.COMPOSER_BIN | default "$(which composer)"}}'
+
+vars:
+  COMPOSER_BIN_DIR: '{{.TASKFILE_DIR}}/vendor/bin'
+
+tasks:
+  default:
+    desc: 'List all commands.'
+    cmd: 'task -l'
+
+  # Utils:
+
+  composer:
+    desc: 'Runs `composer` command.'
+    cmd: '{{.PHP_BIN}} {{.COMPOSER_BIN}} {{.CLI_ARGS}} --ansi'
+    internal: true
+    silent: true
+
+  pest:
+    desc: 'Runs `pest` command.'
+    cmd: '{{.PHP_BIN}} {{.COMPOSER_BIN_DIR}}/pest {{.CLI_ARGS}} --colors=always'
+    silent: true
+
+  pint:
+    desc: 'Runs `pint` command.'
+    aliases:
+      - p
+    cmd: '{{.PHP_BIN}} {{.COMPOSER_BIN_DIR}}/pint -v {{.CLI_ARGS}} --ansi'
+    silent: true
+
+  phpstan:
+    desc: 'Runs `phpstan` command.'
+    aliases:
+      - s
+      - stan
+    cmd: '{{.PHP_BIN}} {{.COMPOSER_BIN_DIR}}/phpstan {{.CLI_ARGS}} --ansi'
+    silent: true
+
+  rector:
+    desc: 'Runs `rector` command.'
+    aliases:
+      - r
+    cmd: '{{.PHP_BIN}} {{.COMPOSER_BIN_DIR}}/rector {{.CLI_ARGS}} --ansi'
+    silent: true
+
+  # Linters:
+
+  lint:
+    desc: 'Run all linters.'
+    aliases:
+      - l
+    cmds:
+      - defer: { task: lint:rector }
+      - defer: { task: lint:phpstan }
+      - defer: { task: lint:pint }
+      - defer: { task: lint:composer }
+
+  lint:composer:
+    desc: 'Validates composer.json.'
+    aliases:
+      - l:co
+    cmds:
+      - task: composer
+        vars: { CLI_ARGS: 'validate --no-check-version --no-check-publish --strict' }
+
+  lint:pint:
+    desc: 'Lint PHP code style.'
+    aliases:
+      - l:p
+      - l:pint
+    cmds:
+      - task: pint
+        vars: { CLI_ARGS: '--test {{.CLI_ARGS}}' }
+
+  lint:phpstan:
+    desc: 'Analyze PHP code for bugs and errors.'
+    aliases:
+      - l:s
+      - l:stan
+    cmds:
+      - task: phpstan
+        vars: { CLI_ARGS: 'analyze {{.CLI_ARGS}}' }
+
+  lint:rector:
+    desc: 'Check for Rector refactoring suggestions.'
+    aliases:
+      - l:r
+    cmds:
+      - task: rector
+        vars: { CLI_ARGS: '--dry-run {{.CLI_ARGS}}' }
+
+  # Fixing:
+
+  fix:
+    desc: 'Try automated fixes for found problems.'
+    aliases:
+      - f
+    cmds:
+      # defers run in reverse: Rector first, then Pint formats its output
+      - defer: { task: fix:pint }
+      - defer: { task: fix:rector }
+
+  fix:pint:
+    desc: 'Fix PHP code style.'
+    aliases:
+      - f:p
+      - f:pint
+    cmds:
+      - task: pint
+
+  fix:rector:
+    desc: 'Fix Rector issues.'
+    aliases:
+      - f:r
+    cmds:
+      - task: rector
+
+  # Testing:
+
+  test:
+    desc: 'Run tests.'
+    aliases:
+      - t
+    cmds:
+      - task: pest
+        vars: { CLI_ARGS: '{{.CLI_ARGS}}' }
+
+  test:coverage:
+    desc: 'Run tests and require 100% code coverage (needs Xdebug or PCOV); HTML report lands in build/coverage.'
+    aliases:
+      - t:c
+      - t:coverage
+    env:
+      XDEBUG_MODE: coverage
+    cmds:
+      - task: pest
+        vars:
+          CLI_ARGS: '--coverage --min=100 --coverage-html build/coverage --coverage-clover build/report/coverage.xml --log-junit build/report/junit.xml {{.CLI_ARGS}}'
+
+  test:types:
+    desc: 'Require 100% type coverage.'
+    aliases:
+      - t:t
+      - t:types
+    cmds:
+      - task: pest
+        vars: { CLI_ARGS: '--type-coverage --compact --min=100 {{.CLI_ARGS}}' }

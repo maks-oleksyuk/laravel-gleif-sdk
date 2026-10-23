@@ -1,0 +1,22 @@
+{
+  "type": "official-organizational-roles",
+  "id": "01D0O4",
+  "attributes": {
+    "code": "01D0O4",
+    "country": "Qatar",
+    "jurisdiction": null,
+    "countryCode": "QA",
+    "subdivisionCode": null,
+    "dateCreated": "2023-06-28",
+    "status": "ACTV",
+    "elfCode": "RN1W",
+    "names": [
+      {
+        "name": "موظف",
+        "language": "Arabic",
+        "languageCode": "ar",
+        "transliteratedName": "muwadaf"
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "regions",
+  "id": "AD-02",
+  "attributes": {
+    "code": "AD-02",
+    "name": null,
+    "names": [
+      {
+        "language": "ca",
+        "name": "Canillo"
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "countries",
+  "id": "DE",
+  "attributes": {
+    "code": "DE",
+    "name": "Germany"
+  }
+}
