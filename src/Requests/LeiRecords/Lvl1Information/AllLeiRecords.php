@@ -50,7 +50,7 @@ final class AllLeiRecords extends Request implements Cacheable, Paginatable
 
     protected function defaultQuery(): array
     {
-        return array_filter([
+        return [
             'filter[lei]' => implode(',', $this->lei),
             'filter[bic]' => $this->bic,
             'filter[isin]' => $this->isin,
@@ -65,7 +65,7 @@ final class AllLeiRecords extends Request implements Cacheable, Paginatable
             'sort' => $this->sort,
             'page[size]' => $this->pageSize,
             'page[number]' => $this->pageNumber,
-        ]);
+        ];
     }
 
     /**

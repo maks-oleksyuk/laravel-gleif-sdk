@@ -31,10 +31,10 @@ final class AllRegistrationAgents extends Request implements Cacheable
 
     protected function defaultQuery(): array
     {
-        return array_filter([
+        return [
             'filter[lei]' => $this->lei,
             'filter[leiIssuer]' => $this->leiIssuer,
-        ]);
+        ];
     }
 
     /**

@@ -11,8 +11,9 @@ use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-final class LeiIssuerJurisdictionById extends Request implements Cacheable
+final class LeiIssuerJurisdictionById extends Request implements Cacheable, Paginatable
 {
     use HasGleifCache;
     use MapsResponseData;
@@ -21,11 +22,21 @@ final class LeiIssuerJurisdictionById extends Request implements Cacheable
 
     public function __construct(
         private readonly string $id,
+        private readonly ?int $pageSize = null,
+        private readonly ?int $pageNumber = null,
     ) {}
 
     public function resolveEndpoint(): string
     {
         return '/lei-issuers/'.rawurlencode($this->id).'/jurisdictions';
+    }
+
+    protected function defaultQuery(): array
+    {
+        return [
+            'page[size]' => $this->pageSize,
+            'page[number]' => $this->pageNumber,
+        ];
     }
 
     /**

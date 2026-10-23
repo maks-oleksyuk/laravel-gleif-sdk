@@ -27,6 +27,8 @@ use Oleksyuk\Gleif\Enums\PolicyConformityFlag;
 use Oleksyuk\Gleif\Enums\RecordType;
 use Oleksyuk\Gleif\Enums\RegistrationStatus;
 use Oleksyuk\Gleif\GleifConnector;
+use Saloon\Exceptions\Request\ClientException;
+use Saloon\Exceptions\Request\Statuses\NotFoundException;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Response;
@@ -93,7 +95,7 @@ test('endpoint sends the right URL and maps the response', function (Closure $ca
     // Issuers
     'leiIssuer()->all()' => [fn (GleifConnector $gleif): Response => $gleif->leiIssuer()->all(5, 2), '/lei-issuers?page[size]=5&page[number]=2', 'lei-issuer', true, LeiIssuer::class],
     'leiIssuer()->find()' => [fn (GleifConnector $gleif): Response => $gleif->leiIssuer()->find('X'), '/lei-issuers/X', 'lei-issuer', false, LeiIssuer::class],
-    'leiIssuer()->jurisdictions()' => [fn (GleifConnector $gleif): Response => $gleif->leiIssuer()->jurisdictions('X'), '/lei-issuers/X/jurisdictions', 'lei-issuer-jurisdiction', true, LeiIssuerJurisdiction::class],
+    'leiIssuer()->jurisdictions()' => [fn (GleifConnector $gleif): Response => $gleif->leiIssuer()->jurisdictions('X', 5, 2), '/lei-issuers/X/jurisdictions?page[size]=5&page[number]=2', 'lei-issuer-jurisdiction', true, LeiIssuerJurisdiction::class],
     'vLeiIssuer()->all()' => [fn (GleifConnector $gleif): Response => $gleif->vLeiIssuer()->all(5, 2), '/vlei-issuers?page[size]=5&page[number]=2', 'vlei-issuer', true, VLeiIssuer::class],
     'vLeiIssuer()->find()' => [fn (GleifConnector $gleif): Response => $gleif->vLeiIssuer()->find('X'), '/vlei-issuers/X', 'vlei-issuer', false, VLeiIssuer::class],
 
@@ -141,23 +143,59 @@ test('optional filters are left out of the query', function (): void {
     expect($response->getPsrRequest()->getUri()->getQuery())->toBeEmpty();
 });
 
-test('a list endpoint without a data array maps to no DTOs', function (): void {
-    $connector = new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['errors' => []], 500)]));
+test('unset and empty filters are dropped, while "0" is sent', function (): void {
+    $connector = new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['data' => []])]));
+
+    $response = $connector->leiRecord()->all(lei: [], bic: '', fulltext: '0');
+
+    expect($response->getPsrRequest()->getUri()->getQuery())->toBe('filter%5Bfulltext%5D=0');
+});
+
+test('an empty path value is rejected instead of hitting the parent endpoint', function (Closure $call): void {
+    $call(new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['data' => []])])));
+})->with([
+    'find()' => [fn (GleifConnector $gleif): mixed => $gleif->leiRecord()->find('')],
+    'nested path' => [fn (GleifConnector $gleif): mixed => $gleif->leiRecord()->isins('')],
+    // @phpstan-ignore argument.type (deliberately outside the documented formats)
+    'export format' => [fn (GleifConnector $gleif): mixed => $gleif->export()->leiRecords('', ['A'])],
+])->throws(InvalidArgumentException::class, 'GLEIF path values must not be empty');
+
+test('a successful list response without data maps to no DTOs', function (): void {
+    $connector = new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['meta' => []])]));
 
     expect($connector->country()->all()->dto())->toBe([]);
 });
 
-test('a single-record endpoint without a data object throws', function (): void {
-    $connector = new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['errors' => [['status' => '404']]], 404)]));
+test('a successful single-record response without data throws', function (): void {
+    $connector = new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['meta' => []])]));
 
-    $connector->leiRecord()->directParent('X')->dto();
+    $connector->leiRecord()->find('X')->dto();
 })->throws(RuntimeException::class, 'Invalid response data');
+
+test('an error response throws instead of mapping to DTOs', function (Closure $call, int $status, string $exception): void {
+    $connector = new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['errors' => [['status' => (string) $status]]], $status)]));
+
+    $response = $call($connector);
+    assert($response instanceof Response);
+
+    expect($response->dto(...))->toThrow($exception);
+})->with([
+    'list, 400' => [fn (GleifConnector $gleif): Response => $gleif->leiRecord()->all(pageSize: 500), 400, ClientException::class],
+    'single, 404' => [fn (GleifConnector $gleif): Response => $gleif->leiRecord()->directParent('X'), 404, NotFoundException::class],
+]);
 
 test('export() downloads LEI records from the export API', function (): void {
     $mockClient = new MockClient(['*' => MockResponse::make("LEI,Name\nX,Y\n")]);
 
-    $response = new GleifConnector()->withMockClient($mockClient)->export()->leiRecords('csv', ['A', 'B']);
+    $response = new GleifConnector()->withMockClient($mockClient)->export()->leiRecords('csv', ['A', 'B', 'A']);
 
-    expect(urldecode((string) $response->getPsrRequest()->getUri()))->toBe('https://api.gleif.org/export/v1/lei-records.csv?filter[lei]=A,B')
+    expect(urldecode((string) $response->getPsrRequest()->getUri()))->toBe('https://api.gleif.org/export/v1/lei-records.csv?filter[lei]=A,B&page[size]=2')
         ->and($response->body())->toBe("LEI,Name\nX,Y\n");
 });
+
+test('export() refuses an empty or oversized LEI list instead of exporting the wrong records', function (array $lei): void {
+    new GleifConnector()->export()->leiRecords('csv', array_filter($lei, is_string(...)));
+})->with([
+    'no LEIs' => [[]],
+    'more than 5,000 LEIs' => [array_map(strval(...), range(1, 5001))],
+])->throws(InvalidArgumentException::class, 'GLEIF exports 1 to 5000 LEIs at a time');

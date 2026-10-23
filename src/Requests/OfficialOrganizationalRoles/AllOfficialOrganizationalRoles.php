@@ -34,12 +34,12 @@ final class AllOfficialOrganizationalRoles extends Request implements Cacheable,
 
     protected function defaultQuery(): array
     {
-        return array_filter([
+        return [
             'filter[name]' => $this->name,
             'filter[countryCode]' => $this->countryCode,
             'page[size]' => $this->pageSize,
             'page[number]' => $this->pageNumber,
-        ]);
+        ];
     }
 
     /**

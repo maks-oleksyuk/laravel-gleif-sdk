@@ -39,14 +39,14 @@ final class FieldModifications extends Request implements Cacheable, Paginatable
 
     protected function defaultQuery(): array
     {
-        return array_filter([
+        return [
             'filter[modificationType]' => $this->modificationType?->value,
             'filter[recordType]' => $this->recordType?->value,
             'filter[field]' => $this->field,
             'filter[date]' => $this->date,
             'page[size]' => $this->pageSize,
             'page[number]' => $this->pageNumber,
-        ]);
+        ];
     }
 
     /**

@@ -31,7 +31,7 @@ $record = Gleif::leiRecord()->find('984500A8D612DCC67997')->dto();
 echo $record->entityLegalName['name']; // Global Legal Entity Identifier Foundation
 ```
 
-Every method returns a Saloon `Response`: call `->dto()` for typed objects from `Oleksyuk\Gleif\Data`, or `->json()` for the raw payload. GLEIF answers `404` when a related record doesn't exist (e.g. an entity without a direct parent), so check `->failed()` or use `->dtoOrFail()` there. The facade proxies to `Oleksyuk\Gleif\GleifConnector`, a container singleton, which can be injected instead.
+Every method returns a Saloon `Response`: call `->dto()` for typed objects from `Oleksyuk\Gleif\Data`, or `->json()` for the raw payload. On an error response `->dto()` throws Saloon's `RequestException` instead of mapping it: e.g. `NotFoundException` when a related record doesn't exist (an entity without a direct parent) or `BadRequestException` for a `pageSize` above 200. An empty ID throws `InvalidArgumentException` before anything is sent. The facade proxies to `Oleksyuk\Gleif\GleifConnector`, a container singleton, which can be injected instead.
 
 ### Covered APIs
 
@@ -50,7 +50,7 @@ Every method returns a Saloon `Response`: call `->dto()` for typed objects from 
 | `officialOrganizationalRole()` | Official organizational roles (OOR)                                          |
 | `registrationAuthority()`      | Registration authorities                                                     |
 | `registrationAgent()`          | Registration agents                                                          |
-| `export()`                     | LEI record export (`csv`, `xlsx`, `json`, `xml`)                             |
+| `export()`                     | Export of 1–5,000 LEI records (`csv`, `xlsx`, `json`, `xml`)                 |
 
 ### Searching
 
@@ -69,7 +69,7 @@ $suggestions = Gleif::fuzzyCompletion()->search('gleif', FuzzyCompletionField::E
 
 ### Pagination
 
-`all()` returns one page. To walk every page lazily, pass a request to `paginate()`:
+`all()` returns one page (`pageSize` is at most 200, and GLEIF caps page numbers at 10,000 results). To walk every page lazily, pass a request to `paginate()`: it follows the `links.next` GLEIF returns and uses cursor pagination for LEI records, so it isn't capped:
 
 ```php
 use Oleksyuk\Gleif\Requests\LeiRecords\Lvl1Information\AllLeiRecords;

@@ -32,10 +32,10 @@ final class AllRegistrationAuthorities extends Request implements Cacheable, Pag
 
     protected function defaultQuery(): array
     {
-        return array_filter([
+        return [
             'page[size]' => $this->pageSize,
             'page[number]' => $this->pageNumber,
-        ]);
+        ];
     }
 
     /**

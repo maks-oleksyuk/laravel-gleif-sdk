@@ -33,10 +33,10 @@ final class UltimateChildRelationship extends Request implements Cacheable, Pagi
 
     protected function defaultQuery(): array
     {
-        return array_filter([
+        return [
             'page[size]' => $this->pageSize,
             'page[number]' => $this->pageNumber,
-        ]);
+        ];
     }
 
     /** @return RelationshipRecord[] */

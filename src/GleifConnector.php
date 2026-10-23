@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Oleksyuk\Gleif;
 
 use Illuminate\Support\Facades\Cache;
+use InvalidArgumentException;
 use Oleksyuk\Gleif\Resources\AutoCompletionResource;
 use Oleksyuk\Gleif\Resources\CountryResource;
 use Oleksyuk\Gleif\Resources\EntityLegalFormResource;
@@ -21,10 +22,10 @@ use Oleksyuk\Gleif\Resources\RegistrationAuthorityResource;
 use Oleksyuk\Gleif\Resources\VLeiIssuerResource;
 use Saloon\Contracts\Sender;
 use Saloon\Http\Connector;
+use Saloon\Http\PendingRequest;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\HasPagination;
-use Saloon\PaginationPlugin\PagedPaginator;
 use Saloon\PaginationPlugin\Paginator;
 use Saloon\RateLimitPlugin\Contracts\RateLimitStore;
 use Saloon\RateLimitPlugin\Limit;
@@ -38,6 +39,22 @@ final class GleifConnector extends Connector implements HasPagination
     public function resolveBaseUrl(): string
     {
         return 'https://api.gleif.org/api/v1';
+    }
+
+    /**
+     * Requests list every filter; unset ones are dropped here, while "0" is a real value.
+     * An empty path value (e.g. find('')) would silently hit the parent list endpoint instead.
+     *
+     * @throws InvalidArgumentException when a path value is empty
+     */
+    public function boot(PendingRequest $pendingRequest): void
+    {
+        $query = $pendingRequest->query();
+        $query->set(array_filter($query->all(), static fn (mixed $value): bool => $value !== null && $value !== ''));
+
+        if (preg_match('#//|/$|\.$#', (string) parse_url($pendingRequest->getUrl(), PHP_URL_PATH)) === 1) {
+            throw new InvalidArgumentException('GLEIF path values must not be empty, got '.$pendingRequest->getUrl());
+        }
     }
 
     public function leiRecord(): LeiRecordResource
@@ -112,11 +129,11 @@ final class GleifConnector extends Connector implements HasPagination
 
     public function paginate(Request $request): Paginator
     {
-        return new class(connector: $this, request: $request) extends PagedPaginator
+        return new class(connector: $this, request: $request) extends Paginator
         {
             protected function isLastPage(Response $response): bool
             {
-                return is_null($response->json('links.next'));
+                return ! is_string($response->json('links.next'));
             }
 
             protected function getPageItems(Response $response, Request $request): array
@@ -126,12 +143,29 @@ final class GleifConnector extends Connector implements HasPagination
                 return is_array($data) ? $data : [];
             }
 
+            /**
+             * Follows the links.next GLEIF returns. Starting with page[cursor]=* switches lei-records
+             * to cursor pagination, which isn't capped at 10,000 results like page[number] is;
+             * other endpoints ignore it and link to page[number] instead.
+             */
             protected function applyPagination(Request $request): Request
             {
-                $request->query()->add('page[number]', $this->currentPage + 1);
+                $query = $request->query();
+                $query->remove('page[number]');
+
+                $next = $this->currentResponse?->json('links.next');
+
+                if (is_string($next)) {
+                    foreach (explode('&', (string) parse_url($next, PHP_URL_QUERY)) as $parameter) {
+                        [$key, $value] = explode('=', $parameter, 2) + [1 => ''];
+                        $query->add(urldecode($key), urldecode($value));
+                    }
+                } else {
+                    $query->add('page[cursor]', '*');
+                }
 
                 if ($this->perPageLimit !== null) {
-                    $request->query()->add('page[size]', $this->perPageLimit);
+                    $query->add('page[size]', $this->perPageLimit);
                 }
 
                 return $request;

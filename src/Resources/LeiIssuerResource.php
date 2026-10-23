@@ -25,8 +25,8 @@ final class LeiIssuerResource extends BaseResource
         return $this->connector->send(new LeiIssuerById($id));
     }
 
-    public function jurisdictions(string $id): Response
+    public function jurisdictions(string $id, ?int $pageSize = null, ?int $pageNumber = null): Response
     {
-        return $this->connector->send(new LeiIssuerJurisdictionById($id));
+        return $this->connector->send(new LeiIssuerJurisdictionById($id, $pageSize, $pageNumber));
     }
 }

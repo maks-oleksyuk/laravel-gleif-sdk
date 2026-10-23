@@ -12,9 +12,11 @@ final class ExportResource extends BaseResource
 {
     /**
      * @param  'csv'|'xlsx'|'json'|'xml'  $format
-     * @param  string[]  $lei
+     * @param  string[]  $lei  1 to 5,000 LEIs
+     *
+     * @throws \InvalidArgumentException when there are no LEIs or more than 5,000
      */
-    public function leiRecords(string $format, array $lei = []): Response
+    public function leiRecords(string $format, array $lei): Response
     {
         return $this->connector->send(new Export($format, $lei));
     }

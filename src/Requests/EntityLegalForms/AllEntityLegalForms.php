@@ -32,10 +32,10 @@ final class AllEntityLegalForms extends Request implements Cacheable, Paginatabl
 
     protected function defaultQuery(): array
     {
-        return array_filter([
+        return [
             'page[size]' => $this->pageSize,
             'page[number]' => $this->pageNumber,
-        ]);
+        ];
     }
 
     /**

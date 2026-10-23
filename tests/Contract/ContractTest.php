@@ -12,7 +12,7 @@ use Saloon\Http\Request;
  */
 
 /**
- * "METHOD /path" of every Request in src/Requests, built with "{}" for each required argument.
+ * "METHOD /path" of every Request in src/Requests, built with "{}" (or ["{}"]) for each required argument.
  *
  * @return array<string, string> class => operation
  */
@@ -29,7 +29,10 @@ function sdkOperations(): array
 
         $constructor = new ReflectionClass($class)->getConstructor();
         $required = array_filter($constructor?->getParameters() ?? [], fn (ReflectionParameter $parameter): bool => ! $parameter->isOptional());
-        $request = new $class(...array_fill(0, count($required), '{}'));
+        $request = new $class(...array_map(
+            fn (ReflectionParameter $parameter): array|string => (string) $parameter->getType() === 'array' ? ['{}'] : '{}',
+            $required,
+        ));
 
         $endpoint = $request->resolveEndpoint();
         $url = str_starts_with($endpoint, 'https://') ? $endpoint : $baseUrl.$endpoint;
