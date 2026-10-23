@@ -44,5 +44,17 @@
         "extension": {
             "deletedAt": null
         }
+    },
+    "relationships": {
+        "start-node": {
+            "links": {
+                "related": "https://api.gleif.org/api/v1/lei-records/52990021U40DYSDLV579"
+            }
+        },
+        "end-node": {
+            "links": {
+                "related": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86"
+            }
+        }
     }
 }

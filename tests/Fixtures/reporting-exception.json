@@ -8,5 +8,12 @@
         "category": "DIRECT_ACCOUNTING_CONSOLIDATION_PARENT",
         "reason": "NO_KNOWN_PERSON",
         "reference": null
+    },
+    "relationships": {
+        "lei-record": {
+            "links": {
+                "related": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86"
+            }
+        }
     }
 }

@@ -127,7 +127,7 @@ tasks:
       - t
     cmds:
       - task: pest
-        vars: { CLI_ARGS: '{{.CLI_ARGS}}' }
+        vars: { CLI_ARGS: '--compact {{.CLI_ARGS}}' }
 
   test:coverage:
     desc: 'Run tests and require 100% code coverage (needs Xdebug or PCOV); HTML report lands in build/coverage.'
@@ -139,7 +139,7 @@ tasks:
     cmds:
       - task: pest
         vars:
-          CLI_ARGS: '--coverage --min=100 --coverage-html build/coverage --coverage-clover build/report/coverage.xml --log-junit build/report/junit.xml {{.CLI_ARGS}}'
+          CLI_ARGS: '--compact --coverage --min=100 --coverage-html build/coverage --coverage-clover build/report/coverage.xml --log-junit build/report/junit.xml {{.CLI_ARGS}}'
 
   test:types:
     desc: 'Require 100% type coverage.'

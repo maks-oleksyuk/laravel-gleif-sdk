@@ -50,18 +50,8 @@ foreach ($fixtures as $name => $path) {
         throw new RuntimeException("No resource object in {$path}.");
     }
 
-    // Links only repeat the URL; keep relationships that carry related IDs.
+    // The self link only repeats the URL; relationship links stay, they tell which related records exist.
     unset($item['links']);
-    if (is_array($item['relationships'] ?? null)) {
-        $item['relationships'] = array_filter(array_map(
-            fn (mixed $relation): mixed => is_array($relation) ? array_diff_key($relation, ['links' => true]) : $relation,
-            $item['relationships'],
-        ));
-    }
-
-    if (($item['relationships'] ?? null) === []) {
-        unset($item['relationships']);
-    }
 
     // Deutsche Bank has dozens of BICs and merger events: a few are enough to test the mapping.
     if ($name === 'lei-record' && is_array($item['attributes'] ?? null)) {

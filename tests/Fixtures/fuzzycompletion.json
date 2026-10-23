@@ -8,6 +8,9 @@
             "data": {
                 "type": "lei-records",
                 "id": "5967007LIEEXZXJL2833"
+            },
+            "links": {
+                "related": "https://api.gleif.org/api/v1/lei-records/5967007LIEEXZXJL2833"
             }
         }
     }

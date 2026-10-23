@@ -124,6 +124,9 @@ test('DTO maps a real API resource object', function (Closure $map, string $fixt
         'ocid' => 'de/M1201_HRB30000',
         'spglobal' => ['410467'],
         'conformityFlag' => PolicyConformityFlag::Conforming,
+        // Deutsche Bank reports exceptions instead of parents.
+        'hasDirectParent' => false,
+        'hasUltimateParent' => false,
     ]],
     'OfficialOrganizationalRole' => [OfficialOrganizationalRole::fromResponse(...), 'official-organizational-role', [
         'id' => '01D0O4',
@@ -210,4 +213,13 @@ test('dates do not depend on the app timezone', function (): void {
 
     expect($form->dateCreated?->toIso8601String())->toBe('2017-11-30T00:00:00+00:00')
         ->and($issuer->accreditationDate?->toIso8601String())->toBe('2017-04-13T00:00:00+00:00');
+});
+
+test('parent flags follow the relationship links GLEIF sends', function (): void {
+    $record = LeiRecord::fromResponse(['id' => 'X', 'relationships' => [
+        'direct-parent' => ['links' => ['lei-record' => 'https://api.gleif.org/api/v1/lei-records/X/direct-parent']],
+        'ultimate-parent' => ['links' => ['reporting-exception' => 'https://api.gleif.org/api/v1/lei-records/X/ultimate-parent-reporting-exception']],
+    ]]);
+
+    expect($record)->toHaveProperties(['hasDirectParent' => true, 'hasUltimateParent' => false]);
 });

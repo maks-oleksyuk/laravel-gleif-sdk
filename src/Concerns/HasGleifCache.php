@@ -5,14 +5,46 @@ declare(strict_types=1);
 namespace Oleksyuk\Gleif\Concerns;
 
 use Carbon\CarbonImmutable;
+use DateTimeImmutable;
 use Illuminate\Support\Facades\Cache;
 use Saloon\CachePlugin\Contracts\Driver;
+use Saloon\CachePlugin\Data\CachedResponse;
 use Saloon\CachePlugin\Drivers\LaravelCacheDriver;
+use Saloon\CachePlugin\Helpers\CacheKeyHelper;
 use Saloon\CachePlugin\Traits\HasCaching;
+use Saloon\Data\RecordedResponse;
+use Saloon\Http\PendingRequest;
+use Saloon\Http\Response;
 
 trait HasGleifCache
 {
     use HasCaching;
+
+    /**
+     * GLEIF answers 404 for a record that doesn't exist and for an entity without a parent.
+     * That answer only changes with the next Golden Copy as well, so it is cached like a 200:
+     * the cache plugin skips failed responses, and a cache hit doesn't count against the rate limit.
+     */
+    public function bootHasGleifCache(PendingRequest $pendingRequest): void
+    {
+        if ($this->cachingEnabled === false) {
+            return;
+        }
+
+        $pendingRequest->middleware()->onResponse(function (Response $response): void {
+            if ($response->status() !== 404 || $response->isCached()) {
+                return;
+            }
+
+            $pendingRequest = $response->getPendingRequest();
+            $ttl = $this->cacheExpiryInSeconds();
+
+            $this->resolveCacheDriver()->set(
+                key: CacheKeyHelper::createHashed($pendingRequest, $this->cacheKey($pendingRequest)),
+                cachedResponse: new CachedResponse(RecordedResponse::fromResponse($response), new DateTimeImmutable('+'.$ttl.' seconds'), $ttl),
+            );
+        });
+    }
 
     /**
      * @see https://gleif.org/en/lei-data/gleif-golden-copy

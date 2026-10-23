@@ -4,9 +4,9 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/maks-oleksyuk/laravel-gleif-sdk/ci.yml?branch=main&style=flat&label=CI)](//github.com/maks-oleksyuk/laravel-gleif-sdk/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/codecov/c/github/maks-oleksyuk/laravel-gleif-sdk?style=flat&logo=codecov&logoColor=white)](//codecov.io/gh/maks-oleksyuk/laravel-gleif-sdk)
-[![Latest Version](https://img.shields.io/packagist/v/oleksyuk/laravel-gleif-sdk.svg?style=flat&logo=packagist&logoColor=white&color=F28D1A)](//packagist.org/packages/oleksyuk/laravel-gleif-sdk)
 [![PHP Version](https://img.shields.io/badge/PHP-8.4%2B-777bb4?style=flat&logo=php&logoColor=white)](composer.json)
 [![Laravel Version](https://img.shields.io/badge/Laravel-13-ff2d20?style=flat&logo=laravel&logoColor=white)](composer.json)
+[![Latest Version](https://img.shields.io/packagist/v/oleksyuk/laravel-gleif-sdk.svg?style=flat&logo=packagist&logoColor=white&color=F28D1A)](//packagist.org/packages/oleksyuk/laravel-gleif-sdk)
 [![Total Downloads](https://img.shields.io/packagist/dt/oleksyuk/laravel-gleif-sdk.svg?style=flat&logo=packagist&logoColor=white&color=F28D1A)](//packagist.org/packages/oleksyuk/laravel-gleif-sdk/stats)
 
 Laravel SDK for the [GLEIF](//www.gleif.org) LEI API, built on [Saloon](//docs.saloon.dev).
@@ -83,7 +83,7 @@ foreach ($paginator->items() as $item) {
 
 ### Caching
 
-Responses are cached in your Laravel cache until shortly after the next [Golden Copy](//www.gleif.org/en/lei-data/gleif-golden-copy) publication (02:15, 10:15 and 18:15 UTC), when GLEIF data can change. Pick a dedicated store via `.env`:
+GLEIF publishes a new [Golden Copy](//www.gleif.org/en/lei-data/gleif-golden-copy) three times a day, so responses are cached in your Laravel cache until the next refresh window (02:15, 10:15 and 18:15 UTC). That includes `404` answers, such as an unknown LEI or an entity without a parent: they don't change in between either. To skip a request that can only answer `404`, check the record first: `$record->hasDirectParent` and `$record->hasUltimateParent` tell whether GLEIF links a parent record or reports an exception instead. Pick a dedicated store via `.env`:
 
 ```dotenv
 GLEIF_CACHE_STORE=redis

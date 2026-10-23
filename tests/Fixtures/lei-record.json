@@ -108,5 +108,61 @@
             "410467"
         ],
         "conformityFlag": "CONFORMING"
+    },
+    "relationships": {
+        "managing-lou": {
+            "links": {
+                "related": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/managing-lou"
+            }
+        },
+        "lei-issuer": {
+            "links": {
+                "related": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/lei-issuer"
+            }
+        },
+        "field-modifications": {
+            "links": {
+                "related": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/field-modifications"
+            }
+        },
+        "direct-parent": {
+            "links": {
+                "reporting-exception": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/direct-parent-reporting-exception"
+            }
+        },
+        "ultimate-parent": {
+            "links": {
+                "reporting-exception": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/ultimate-parent-reporting-exception"
+            }
+        },
+        "direct-children": {
+            "links": {
+                "relationship-records": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/direct-child-relationships",
+                "related": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/direct-children"
+            }
+        },
+        "ultimate-children": {
+            "links": {
+                "relationship-records": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/ultimate-child-relationships",
+                "related": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/ultimate-children"
+            }
+        },
+        "branches": {
+            "links": {
+                "relationship-records": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/branch-relationships",
+                "related": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/branches"
+            }
+        },
+        "managed-funds": {
+            "links": {
+                "relationship-records": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/managed-fund-relationships",
+                "related": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/managed-funds"
+            }
+        },
+        "isins": {
+            "links": {
+                "related": "https://api.gleif.org/api/v1/lei-records/7LTWFZYICNSX8D621K86/isins"
+            }
+        }
     }
 }

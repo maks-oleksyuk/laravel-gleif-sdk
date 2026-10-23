@@ -73,6 +73,9 @@ final readonly class LeiRecord
         public ?string $ocid,
         public ?array $spglobal,
         public ?PolicyConformityFlag $conformityFlag,
+        // Relationships: whether GLEIF links a parent record (otherwise it reports an exception)
+        public bool $hasDirectParent,
+        public bool $hasUltimateParent,
     ) {}
 
     /**
@@ -169,6 +172,8 @@ final readonly class LeiRecord
             ocid: self::asString($data, 'attributes.ocid') ?: null,
             spglobal: is_array($spglobal) ? array_values(array_filter($spglobal, is_string(...))) : null,
             conformityFlag: PolicyConformityFlag::tryFrom(self::asString($data, 'attributes.conformityFlag')),
+            hasDirectParent: self::asString($data, 'relationships.direct-parent.links.lei-record') !== '',
+            hasUltimateParent: self::asString($data, 'relationships.ultimate-parent.links.lei-record') !== '',
         );
     }
 }

@@ -9,6 +9,9 @@
             "data": {
                 "type": "lei-records",
                 "id": "254900OPPU84GM83MG36"
+            },
+            "links": {
+                "related": "https://api.gleif.org/api/v1/lei-records/254900OPPU84GM83MG36"
             }
         }
     }
