@@ -1,11 +1,11 @@
 {
-  "type": "lei-issuer-accredited-jurisdictions",
-  "id": "105299-620f89d76d80f2.70830467",
-  "attributes": {
-    "countryCode": "AE",
-    "accreditedAs": "FULLY\\/PARTIALLY CORROBORATED",
-    "startDate": "2017-04-26T00:00:00+00:00",
-    "endDate": null,
-    "isAccreditedForFunds": true
-  }
+    "type": "lei-issuer-accredited-jurisdictions",
+    "id": "105299-620f89d76d80f2.70830467",
+    "attributes": {
+        "countryCode": "AE",
+        "accreditedAs": "FULLY\\/PARTIALLY CORROBORATED",
+        "startDate": "2017-04-26T00:00:00+00:00",
+        "endDate": null,
+        "isAccreditedForFunds": true
+    }
 }

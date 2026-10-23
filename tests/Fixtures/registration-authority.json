@@ -1,19 +1,19 @@
 {
-  "type": "registration-authorities",
-  "id": "RA000242",
-  "attributes": {
-    "code": "RA000242",
-    "internationalName": "Commercial Register",
-    "localName": "Handelsregister",
-    "internationalOrganizationName": "Local Court Frankfurt am Main",
-    "localOrganizationName": "Amtsgericht Frankfurt am Main",
-    "website": "www.handelsregister.de",
-    "jurisdictions": [
-      {
-        "country": "Germany",
-        "countryCode": "DE",
-        "jurisdiction": "Frankfurt am Main"
-      }
-    ]
-  }
+    "type": "registration-authorities",
+    "id": "RA000242",
+    "attributes": {
+        "code": "RA000242",
+        "internationalName": "Commercial Register",
+        "localName": "Handelsregister",
+        "internationalOrganizationName": "Local Court Frankfurt am Main",
+        "localOrganizationName": "Amtsgericht Frankfurt am Main",
+        "website": "www.handelsregister.de",
+        "jurisdictions": [
+            {
+                "country": "Germany",
+                "countryCode": "DE",
+                "jurisdiction": "Frankfurt am Main"
+            }
+        ]
+    }
 }

@@ -1,15 +1,11 @@
 {
-  "type": "lei-issuers",
-  "id": "5299000J2N45DDNE4Y28",
-  "attributes": {
-    "lei": "5299000J2N45DDNE4Y28",
-    "name": "WM Datenservice",
-    "marketingName": "WM Datenservice",
-    "website": "https://www.wm-leiportal.org/",
-    "accreditationDate": "2017-04-13T00:00:00+00:00"
-  },
-  "relationships": {
-    "jurisdictions": {},
-    "fundJurisdictions": {}
-  }
+    "type": "lei-issuers",
+    "id": "5299000J2N45DDNE4Y28",
+    "attributes": {
+        "lei": "5299000J2N45DDNE4Y28",
+        "name": "WM Datenservice",
+        "marketingName": "WM Datenservice",
+        "website": "https://www.wm-leiportal.org/",
+        "accreditationDate": "2017-04-13T00:00:00+00:00"
+    }
 }

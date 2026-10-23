@@ -1,8 +1,8 @@
 {
-  "type": "countries",
-  "id": "DE",
-  "attributes": {
-    "code": "DE",
-    "name": "Germany"
-  }
+    "type": "countries",
+    "id": "DE",
+    "attributes": {
+        "code": "DE",
+        "name": "Germany"
+    }
 }

@@ -149,3 +149,17 @@ tasks:
     cmds:
       - task: pest
         vars: { CLI_ARGS: '--type-coverage --compact --min=100 {{.CLI_ARGS}}' }
+
+  # Live API snapshots:
+
+  contract:update:
+    desc: 'Refresh the GLEIF endpoint snapshot (from its Postman collection) used by ContractTest.'
+    aliases:
+      - c:u
+    cmd: '{{.PHP_BIN}} tests/Contract/update-snapshot.php'
+
+  fixtures:update:
+    desc: 'Refresh the real GLEIF API responses in tests/Fixtures used by DataTest.'
+    aliases:
+      - fx:u
+    cmd: '{{.PHP_BIN}} tests/Fixtures/update-fixtures.php'

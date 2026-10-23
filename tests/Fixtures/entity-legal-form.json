@@ -1,21 +1,21 @@
 {
-  "type": "entity-legal-forms",
-  "id": "6QQB",
-  "attributes": {
-    "code": "6QQB",
-    "country": "Germany",
-    "jurisdiction": null,
-    "countryCode": "DE",
-    "subdivisionCode": null,
-    "dateCreated": "2017-11-30",
-    "status": "ACTV",
-    "names": [
-      {
-        "localName": "Aktiengesellschaft",
-        "language": "German",
-        "languageCode": "de",
-        "transliteratedName": "Aktiengesellschaft"
-      }
-    ]
-  }
+    "type": "entity-legal-forms",
+    "id": "6QQB",
+    "attributes": {
+        "code": "6QQB",
+        "country": "Germany",
+        "jurisdiction": null,
+        "countryCode": "DE",
+        "subdivisionCode": null,
+        "dateCreated": "2017-11-30",
+        "status": "ACTV",
+        "names": [
+            {
+                "localName": "Aktiengesellschaft",
+                "language": "German",
+                "languageCode": "de",
+                "transliteratedName": "Aktiengesellschaft"
+            }
+        ]
+    }
 }

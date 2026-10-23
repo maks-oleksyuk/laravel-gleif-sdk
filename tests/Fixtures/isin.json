@@ -1,8 +1,8 @@
 {
-  "type": "isins",
-  "id": "eb3d7d08-1fbb-4bef-98ef-2a9b021925ed",
-  "attributes": {
-    "lei": "7LTWFZYICNSX8D621K86",
-    "isin": "DE000DH4HMJ0"
-  }
+    "type": "isins",
+    "id": "eb3d7d08-1fbb-4bef-98ef-2a9b021925ed",
+    "attributes": {
+        "lei": "7LTWFZYICNSX8D621K86",
+        "isin": "DE000DH4HMJ0"
+    }
 }

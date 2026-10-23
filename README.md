@@ -129,6 +129,8 @@ task test            # Pest
 task test:coverage   # Pest, fails below 100% code coverage; HTML report in build/coverage (needs Xdebug or PCOV)
 task test:types      # Pest, fails below 100% type coverage
 task fix             # auto-fix Rector / Pint issues
+task contract:update # refresh the GLEIF endpoint snapshot used by ContractTest
+task fixtures:update # refresh the real GLEIF responses in tests/Fixtures
 ```
 
-Fixtures in `tests/Fixtures` are real GLEIF API resource objects, so the DTO tests check the mapping against what the API actually returns.
+GLEIF publishes no OpenAPI spec, so `tests/Contract/gleif-api.json` is a snapshot of the endpoints in its [Postman collection](//api.gleif.org/docs): `ContractTest` checks that every request hits a documented endpoint and every documented endpoint has a request. Fixtures in `tests/Fixtures` are real GLEIF API resource objects, so the DTO tests check the mapping against what the API actually returns. Both refresh commands need network access; review their diff before committing.

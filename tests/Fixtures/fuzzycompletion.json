@@ -1,14 +1,14 @@
 {
-  "type": "fuzzycompletions",
-  "attributes": {
-    "value": "GLEFF AS"
-  },
-  "relationships": {
-    "lei-records": {
-      "data": {
-        "type": "lei-records",
-        "id": "5967007LIEEXZXJL2833"
-      }
+    "type": "fuzzycompletions",
+    "attributes": {
+        "value": "GLEFF AS"
+    },
+    "relationships": {
+        "lei-records": {
+            "data": {
+                "type": "lei-records",
+                "id": "5967007LIEEXZXJL2833"
+            }
+        }
     }
-  }
 }

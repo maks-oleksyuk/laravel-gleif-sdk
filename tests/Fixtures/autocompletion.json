@@ -1,15 +1,15 @@
 {
-  "type": "autocompletions",
-  "attributes": {
-    "value": "GLEIF Americas A NJ Nonprofit Corporation",
-    "highlighting": "<b>GLEIF</b> Americas A NJ Nonprofit Corporation"
-  },
-  "relationships": {
-    "lei-records": {
-      "data": {
-        "type": "lei-records",
-        "id": "254900OPPU84GM83MG36"
-      }
+    "type": "autocompletions",
+    "attributes": {
+        "value": "GLEIF Americas A NJ Nonprofit Corporation",
+        "highlighting": "<b>GLEIF</b> Americas A NJ Nonprofit Corporation"
+    },
+    "relationships": {
+        "lei-records": {
+            "data": {
+                "type": "lei-records",
+                "id": "254900OPPU84GM83MG36"
+            }
+        }
     }
-  }
 }
