@@ -137,11 +137,14 @@ final class GleifConnector extends Connector implements HasPagination
                 return ! is_string($response->json('links.next'));
             }
 
+            /**
+             * The same DTOs as $response->dto() on a single page.
+             */
             protected function getPageItems(Response $response, Request $request): array
             {
-                $data = $response->json('data');
+                $items = $request->createDtoFromResponse($response);
 
-                return is_array($data) ? $data : [];
+                return is_array($items) ? $items : [];
             }
 
             /**

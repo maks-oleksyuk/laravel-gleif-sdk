@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Oleksyuk\Gleif\Data\LeiRecord;
 use Oleksyuk\Gleif\GleifConnector;
 use Oleksyuk\Gleif\Requests\Countries\AllCountryCodes;
 use Oleksyuk\Gleif\Requests\LeiRecords\Lvl1Information\AllLeiRecords;
@@ -25,7 +26,7 @@ function pageItemIds(iterable $items): array
     return $ids;
 }
 
-test('paginate() starts a cursor and follows links.next past the page-number limit', function (): void {
+test('paginate() starts a cursor, follows links.next past the page-number limit and maps items to DTOs', function (): void {
     $mockClient = new MockClient([
         AllLeiRecords::class => fn (PendingRequest $request): MockResponse => match ($request->query()->get('page[cursor]')) {
             '*' => MockResponse::make([
@@ -41,7 +42,10 @@ test('paginate() starts a cursor and follows links.next past the page-number lim
         ->paginate(new AllLeiRecords(fulltext: 'x', pageNumber: 5))
         ->setPerPageLimit(2);
 
-    expect(pageItemIds($paginator->items()))->toBe(['A', 'B', 'C']);
+    $items = iterator_to_array($paginator->items(), false);
+
+    expect($items)->toContainOnlyInstancesOf(LeiRecord::class)
+        ->and(pageItemIds($items))->toBe(['A', 'B', 'C']);
 
     $mockClient->assertSentCount(2);
     $mockClient->assertSent(fn (AllLeiRecords $request, Response $response): bool => $response->getPendingRequest()->query()->all() == [

@@ -8,12 +8,20 @@ use InvalidArgumentException;
 use Oleksyuk\Gleif\Enums\ExportFormat;
 use Saloon\Enums\Method;
 use Saloon\Http\SoloRequest;
+use Saloon\Traits\Plugins\HasTimeout;
 
 final class Export extends SoloRequest
 {
+    use HasTimeout;
+
     private const int MAX_LEIS = 5000;
 
     protected Method $method = Method::GET;
+
+    /**
+     * Up to 5,000 records, e.g. as XLSX, can take longer than Saloon's 30-second default.
+     */
+    protected int $requestTimeout = 120;
 
     /** @var list<string> */
     private readonly array $lei;

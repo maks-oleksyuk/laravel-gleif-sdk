@@ -77,7 +77,7 @@ use Oleksyuk\Gleif\Requests\LeiRecords\Lvl1Information\AllLeiRecords;
 $paginator = Gleif::paginate(new AllLeiRecords(entityLegalAddressCountry: 'UA'))->setPerPageLimit(200);
 
 foreach ($paginator->items() as $item) {
-    // raw record array
+    // $item is an Oleksyuk\Gleif\Data\LeiRecord, as from ->dto()
 }
 ```
 

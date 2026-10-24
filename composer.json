@@ -28,6 +28,7 @@
         "php": "^8.4",
         "illuminate/cache": "^13.0",
         "illuminate/support": "^13.0",
+        "nesbot/carbon": "^3.0",
         "saloonphp/cache-plugin": "^3.3",
         "saloonphp/pagination-plugin": "^2.3",
         "saloonphp/rate-limit-plugin": "^2.5.3",
@@ -46,7 +47,6 @@
         "rector/rector": "^2.7"
     },
     "minimum-stability": "stable",
-    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Oleksyuk\\Gleif\\": "src/"

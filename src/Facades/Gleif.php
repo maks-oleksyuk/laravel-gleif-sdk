@@ -20,6 +20,10 @@ use Oleksyuk\Gleif\Resources\RegionResource;
 use Oleksyuk\Gleif\Resources\RegistrationAgentResource;
 use Oleksyuk\Gleif\Resources\RegistrationAuthorityResource;
 use Oleksyuk\Gleif\Resources\VLeiIssuerResource;
+use Saloon\Http\Faking\MockClient;
+use Saloon\Http\Request;
+use Saloon\Http\Response;
+use Saloon\PaginationPlugin\Paginator;
 
 /**
  * @method static AutoCompletionResource autoCompletion()
@@ -36,6 +40,8 @@ use Oleksyuk\Gleif\Resources\VLeiIssuerResource;
  * @method static RegistrationAgentResource registrationAgent()
  * @method static RegistrationAuthorityResource registrationAuthority()
  * @method static VLeiIssuerResource vLeiIssuer()
+ * @method static Response send(Request $request, ?MockClient $mockClient = null, ?callable $handleRetry = null)
+ * @method static Paginator paginate(Request $request)
  *
  * @see GleifConnector
  */
