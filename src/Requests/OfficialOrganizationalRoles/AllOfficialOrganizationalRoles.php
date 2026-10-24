@@ -4,22 +4,13 @@ declare(strict_types=1);
 
 namespace Oleksyuk\Gleif\Requests\OfficialOrganizationalRoles;
 
-use Oleksyuk\Gleif\Concerns\HasGleifCache;
-use Oleksyuk\Gleif\Concerns\MapsResponseData;
 use Oleksyuk\Gleif\Data\OfficialOrganizationalRole;
-use Saloon\CachePlugin\Contracts\Cacheable;
-use Saloon\Enums\Method;
-use Saloon\Http\Request;
+use Oleksyuk\Gleif\GleifRequest;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-final class AllOfficialOrganizationalRoles extends Request implements Cacheable, Paginatable
+final class AllOfficialOrganizationalRoles extends GleifRequest implements Paginatable
 {
-    use HasGleifCache;
-    use MapsResponseData;
-
-    protected Method $method = Method::GET;
-
     public function __construct(
         private readonly ?string $name = null,
         private readonly ?string $countryCode = null,

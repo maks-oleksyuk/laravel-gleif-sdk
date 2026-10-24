@@ -4,22 +4,13 @@ declare(strict_types=1);
 
 namespace Oleksyuk\Gleif\Requests\FuzzyCompletions;
 
-use Oleksyuk\Gleif\Concerns\HasGleifCache;
-use Oleksyuk\Gleif\Concerns\MapsResponseData;
 use Oleksyuk\Gleif\Data\FuzzyCompletion;
 use Oleksyuk\Gleif\Enums\FuzzyCompletionField;
-use Saloon\CachePlugin\Contracts\Cacheable;
-use Saloon\Enums\Method;
-use Saloon\Http\Request;
+use Oleksyuk\Gleif\GleifRequest;
 use Saloon\Http\Response;
 
-final class FuzzyCompletions extends Request implements Cacheable
+final class FuzzyCompletions extends GleifRequest
 {
-    use HasGleifCache;
-    use MapsResponseData;
-
-    protected Method $method = Method::GET;
-
     public function __construct(
         private readonly string $search,
         private readonly FuzzyCompletionField $field = FuzzyCompletionField::EntityLegalName,

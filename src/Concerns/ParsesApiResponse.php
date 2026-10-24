@@ -20,6 +20,18 @@ trait ParsesApiResponse
     }
 
     /**
+     * Null for a missing or empty value; "0" stays a value.
+     *
+     * @param  array<mixed>  $data
+     */
+    protected static function asNullableString(array $data, string $key): ?string
+    {
+        $value = self::asString($data, $key);
+
+        return $value === '' ? null : $value;
+    }
+
+    /**
      * @param  array<mixed>  $data
      * @return array<string, mixed>
      */
@@ -35,7 +47,7 @@ trait ParsesApiResponse
 
     /**
      * Date-only values become midnight UTC, so they don't shift with the app timezone;
-     * date-times keep the offset GLEIF sent.
+     * date-times keep the offset GLEIF sent. An empty value is null, not "now" as Carbon would parse it.
      *
      * @param  array<mixed>  $data
      */
@@ -43,7 +55,7 @@ trait ParsesApiResponse
     {
         $value = data_get($data, $key);
 
-        return is_string($value) ? CarbonImmutable::parse($value, 'UTC') : null;
+        return is_string($value) && $value !== '' ? CarbonImmutable::parse($value, 'UTC') : null;
     }
 
     /**

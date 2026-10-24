@@ -29,7 +29,7 @@ final readonly class LeiIssuer
             id: self::asString($data, 'id'),
             lei: self::asString($data, 'attributes.lei'),
             name: self::asString($data, 'attributes.name'),
-            marketingName: self::asString($data, 'attributes.marketingName') ?: null,
+            marketingName: self::asNullableString($data, 'attributes.marketingName'),
             website: self::asString($data, 'attributes.website'),
             accreditationDate: self::asDate($data, 'attributes.accreditationDate'),
         );

@@ -4,21 +4,12 @@ declare(strict_types=1);
 
 namespace Oleksyuk\Gleif\Requests\Countries;
 
-use Oleksyuk\Gleif\Concerns\HasGleifCache;
-use Oleksyuk\Gleif\Concerns\MapsResponseData;
 use Oleksyuk\Gleif\Data\Country;
-use Saloon\CachePlugin\Contracts\Cacheable;
-use Saloon\Enums\Method;
-use Saloon\Http\Request;
+use Oleksyuk\Gleif\GleifRequest;
 use Saloon\Http\Response;
 
-final class CountryCodeById extends Request implements Cacheable
+final class CountryCodeById extends GleifRequest
 {
-    use HasGleifCache;
-    use MapsResponseData;
-
-    protected Method $method = Method::GET;
-
     public function __construct(
         private readonly string $id,
     ) {}

@@ -7,9 +7,18 @@ use Oleksyuk\Gleif\Facades\Gleif;
 use Oleksyuk\Gleif\GleifConnector;
 use Saloon\Http\Senders\GuzzleSender;
 
-test('the connector is a singleton reachable through the facade and alias', function (): void {
+test('the connector is shared within a scope and reachable through the facade and alias', function (): void {
     expect(app(GleifConnector::class))->toBe(app('gleif'))
         ->and(Gleif::getFacadeRoot())->toBe(app(GleifConnector::class));
+});
+
+test('changes to the connector do not leak into the next Octane request or queued job', function (): void {
+    $connector = Gleif::getFacadeRoot();
+
+    app()->forgetScopedInstances();
+
+    expect(Gleif::getFacadeRoot())->toBeInstanceOf(GleifConnector::class)->not->toBe($connector)
+        ->and(app(GleifConnector::class))->toBe(Gleif::getFacadeRoot());
 });
 
 test('the connector sends through the shared Guzzle sender', function (): void {

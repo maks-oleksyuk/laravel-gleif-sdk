@@ -21,12 +21,10 @@ final readonly class FuzzyCompletion
      */
     public static function fromResponse(array $data): self
     {
-        $id = self::asString($data, 'id');
-
         return new self(
-            id: $id ?: null,
+            id: self::asNullableString($data, 'id'),
             value: self::asString($data, 'attributes.value'),
-            lei: self::asString($data, 'relationships.lei-records.data.id') ?: null,
+            lei: self::asNullableString($data, 'relationships.lei-records.data.id'),
         );
     }
 }

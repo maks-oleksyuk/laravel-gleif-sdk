@@ -43,17 +43,18 @@ final class GleifConnector extends Connector implements HasPagination
 
     /**
      * Requests list every filter; unset ones are dropped here, while "0" is a real value.
-     * An empty path value (e.g. find('')) would silently hit the parent list endpoint instead.
+     * An empty, "." or ".." path value (e.g. find('')) would silently hit another endpoint instead:
+     * rawurlencode() leaves dots alone, and the server resolves dot segments.
      *
-     * @throws InvalidArgumentException when a path value is empty
+     * @throws InvalidArgumentException when a path value is empty, "." or ".."
      */
     public function boot(PendingRequest $pendingRequest): void
     {
         $query = $pendingRequest->query();
         $query->set(array_filter($query->all(), static fn (mixed $value): bool => $value !== null && $value !== ''));
 
-        if (preg_match('#//|/$|\.$#', (string) parse_url($pendingRequest->getUrl(), PHP_URL_PATH)) === 1) {
-            throw new InvalidArgumentException('GLEIF path values must not be empty, got '.$pendingRequest->getUrl());
+        if (preg_match('#/\.{0,2}(/|$)#', (string) parse_url($pendingRequest->getUrl(), PHP_URL_PATH)) === 1) {
+            throw new InvalidArgumentException('GLEIF path values must not be empty, "." or "..", got '.$pendingRequest->getUrl());
         }
     }
 
@@ -212,10 +213,8 @@ final class GleifConnector extends Connector implements HasPagination
     protected function resolveRateLimitStore(): RateLimitStore
     {
         /** @var string|null $store */
-        $store = config('gleif.cache.store', config('cache.default'));
+        $store = config('gleif.cache.store');
 
-        return new LaravelCacheStore(
-            Cache::store($store)
-        );
+        return new LaravelCacheStore(Cache::store($store));
     }
 }

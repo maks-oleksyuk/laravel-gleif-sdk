@@ -31,7 +31,7 @@ final readonly class ReportingException
             lei: self::asString($data, 'attributes.lei'),
             category: self::asString($data, 'attributes.category'),
             reason: self::asString($data, 'attributes.reason'),
-            reference: self::asString($data, 'attributes.reference') ?: null,
+            reference: self::asNullableString($data, 'attributes.reference'),
             validFrom: self::asDate($data, 'attributes.validFrom'),
             validTo: self::asDate($data, 'attributes.validTo'),
         );

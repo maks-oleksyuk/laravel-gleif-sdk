@@ -41,6 +41,14 @@ use Oleksyuk\Gleif\Resources\VLeiIssuerResource;
  */
 final class Gleif extends Facade
 {
+    /**
+     * Resolve the scoped connector on every call: queue workers forget scoped instances
+     * between jobs but keep the facade's cached one.
+     *
+     * @var bool
+     */
+    protected static $cached = false;
+
     protected static function getFacadeAccessor(): string
     {
         return GleifConnector::class;

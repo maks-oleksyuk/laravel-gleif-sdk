@@ -187,9 +187,9 @@ test('DTO maps a real API resource object', function (Closure $map, string $fixt
     ]],
 ]);
 
-test('missing or unknown values fall back to safe defaults', function (): void {
+test('missing or unknown values map to null instead of a made-up value', function (): void {
     $record = LeiRecord::fromResponse(['id' => 'X', 'attributes' => ['entity' => ['category' => 'NEW_CATEGORY'], 'bic' => ['A', null]]]);
-    $modification = FieldModification::fromResponse([]);
+    $modification = FieldModification::fromResponse(['attributes' => ['recordType' => 'NEW_TYPE', 'modificationType' => 'MERGE']]);
 
     expect($record)->toHaveProperties([
         'entityLegalName' => null,
@@ -199,10 +199,16 @@ test('missing or unknown values fall back to safe defaults', function (): void {
         'bic' => ['A'],
         'mic' => null,
     ])->and($modification)->toHaveProperties([
-        'recordType' => RecordType::Lei,
-        'modificationType' => ModificationType::Update,
+        'recordType' => null,
+        'modificationType' => null,
         'date' => null,
     ]);
+});
+
+test('an empty string is null, while "0" is a value', function (): void {
+    $exception = ReportingException::fromResponse(['attributes' => ['reference' => '0', 'validFrom' => '', 'validTo' => '']]);
+
+    expect($exception)->toHaveProperties(['reference' => '0', 'validFrom' => null, 'validTo' => null]);
 });
 
 test('dates do not depend on the app timezone', function (): void {

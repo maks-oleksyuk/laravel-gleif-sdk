@@ -19,8 +19,8 @@ final readonly class FieldModification
     public function __construct(
         public string $id,
         public string $lei,
-        public RecordType $recordType,
-        public ModificationType $modificationType,
+        public ?RecordType $recordType,
+        public ?ModificationType $modificationType,
         public string $field,
         public ?CarbonImmutable $date,
         public mixed $valueOld,
@@ -38,8 +38,8 @@ final readonly class FieldModification
         return new self(
             id: self::asString($data, 'id'),
             lei: self::asString($data, 'attributes.lei'),
-            recordType: RecordType::tryFrom(self::asString($data, 'attributes.recordType')) ?? RecordType::Lei,
-            modificationType: ModificationType::tryFrom(self::asString($data, 'attributes.modificationType')) ?? ModificationType::Update,
+            recordType: RecordType::tryFrom(self::asString($data, 'attributes.recordType')),
+            modificationType: ModificationType::tryFrom(self::asString($data, 'attributes.modificationType')),
             field: self::asString($data, 'attributes.field'),
             date: self::asDate($data, 'attributes.date'),
             valueOld: data_get($data, 'attributes.valueOld'),

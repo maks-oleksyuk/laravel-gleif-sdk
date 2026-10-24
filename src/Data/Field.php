@@ -47,11 +47,11 @@ final readonly class Field
             label: self::asString($data, 'attributes.label'),
             dataType: self::asString($data, 'attributes.data_type'),
             enum: is_array($enum) ? array_values(array_filter($enum, is_string(...))) : null,
-            resource: self::asString($data, 'attributes.resource') ?: null,
+            resource: self::asNullableString($data, 'attributes.resource'),
             sortable: self::asBool($data, 'attributes.sortable'),
             operators: $operators,
             contexts: $contexts,
-            jsonPath: self::asString($data, 'attributes.jsonPath') ?: null,
+            jsonPath: self::asNullableString($data, 'attributes.jsonPath'),
         );
     }
 }

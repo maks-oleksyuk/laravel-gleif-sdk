@@ -29,7 +29,7 @@ final readonly class Region
 
         return new self(
             id: self::asString($data, 'id'),
-            name: self::asString($data, 'attributes.name') ?: null,
+            name: self::asNullableString($data, 'attributes.name'),
             names: $names,
         );
     }

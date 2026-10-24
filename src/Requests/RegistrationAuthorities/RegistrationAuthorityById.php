@@ -4,21 +4,12 @@ declare(strict_types=1);
 
 namespace Oleksyuk\Gleif\Requests\RegistrationAuthorities;
 
-use Oleksyuk\Gleif\Concerns\HasGleifCache;
-use Oleksyuk\Gleif\Concerns\MapsResponseData;
 use Oleksyuk\Gleif\Data\RegistrationAuthority;
-use Saloon\CachePlugin\Contracts\Cacheable;
-use Saloon\Enums\Method;
-use Saloon\Http\Request;
+use Oleksyuk\Gleif\GleifRequest;
 use Saloon\Http\Response;
 
-final class RegistrationAuthorityById extends Request implements Cacheable
+final class RegistrationAuthorityById extends GleifRequest
 {
-    use HasGleifCache;
-    use MapsResponseData;
-
-    protected Method $method = Method::GET;
-
     public function __construct(
         private readonly string $id,
     ) {}

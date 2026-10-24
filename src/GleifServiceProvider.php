@@ -15,7 +15,7 @@ final class GleifServiceProvider extends ServiceProvider
 
         $this->app->singleton('gleif.sender', fn (): GuzzleSender => new GuzzleSender);
 
-        $this->app->singleton(GleifConnector::class);
+        $this->app->scoped(GleifConnector::class);
 
         $this->app->alias(GleifConnector::class, 'gleif');
     }

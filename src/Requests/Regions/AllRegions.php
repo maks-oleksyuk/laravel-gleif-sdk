@@ -4,22 +4,13 @@ declare(strict_types=1);
 
 namespace Oleksyuk\Gleif\Requests\Regions;
 
-use Oleksyuk\Gleif\Concerns\HasGleifCache;
-use Oleksyuk\Gleif\Concerns\MapsResponseData;
 use Oleksyuk\Gleif\Data\Region;
-use Saloon\CachePlugin\Contracts\Cacheable;
-use Saloon\Enums\Method;
-use Saloon\Http\Request;
+use Oleksyuk\Gleif\GleifRequest;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-final class AllRegions extends Request implements Cacheable, Paginatable
+final class AllRegions extends GleifRequest implements Paginatable
 {
-    use HasGleifCache;
-    use MapsResponseData;
-
-    protected Method $method = Method::GET;
-
     public function __construct(
         private readonly ?int $pageSize = null,
         private readonly ?int $pageNumber = null,

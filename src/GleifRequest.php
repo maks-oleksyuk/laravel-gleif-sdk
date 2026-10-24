@@ -2,30 +2,40 @@
 
 declare(strict_types=1);
 
-namespace Oleksyuk\Gleif\Concerns;
+namespace Oleksyuk\Gleif;
 
 use Carbon\CarbonImmutable;
 use DateTimeImmutable;
 use Illuminate\Support\Facades\Cache;
+use RuntimeException;
+use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Data\CachedResponse;
 use Saloon\CachePlugin\Drivers\LaravelCacheDriver;
 use Saloon\CachePlugin\Helpers\CacheKeyHelper;
 use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\Data\RecordedResponse;
+use Saloon\Enums\Method;
+use Saloon\Exceptions\Request\RequestException;
 use Saloon\Http\PendingRequest;
+use Saloon\Http\Request;
 use Saloon\Http\Response;
 
-trait HasGleifCache
+/**
+ * A cached GET request to the GLEIF API whose response maps to DTOs from Oleksyuk\Gleif\Data.
+ */
+abstract class GleifRequest extends Request implements Cacheable
 {
     use HasCaching;
+
+    protected Method $method = Method::GET;
 
     /**
      * GLEIF answers 404 for a record that doesn't exist and for an entity without a parent.
      * That answer only changes with the next Golden Copy as well, so it is cached like a 200:
      * the cache plugin skips failed responses, and a cache hit doesn't count against the rate limit.
      */
-    public function bootHasGleifCache(PendingRequest $pendingRequest): void
+    public function boot(PendingRequest $pendingRequest): void
     {
         if ($this->cachingEnabled === false) {
             return;
@@ -75,10 +85,51 @@ trait HasGleifCache
     public function resolveCacheDriver(): Driver
     {
         /** @var string|null $store */
-        $store = config('gleif.cache.store', config('cache.default'));
+        $store = config('gleif.cache.store');
 
-        return new LaravelCacheDriver(
-            Cache::store($store)
-        );
+        return new LaravelCacheDriver(Cache::store($store));
+    }
+
+    /**
+     * @template T
+     *
+     * @param  callable(array<mixed>): T  $map
+     * @return list<T>
+     *
+     * @throws RequestException when GLEIF answered with an error
+     */
+    protected static function mapMany(Response $response, callable $map): array
+    {
+        $response->throw();
+
+        $data = $response->json('data');
+
+        if (! is_array($data)) {
+            return [];
+        }
+
+        return array_values(array_map($map, array_filter($data, is_array(...))));
+    }
+
+    /**
+     * @template T
+     *
+     * @param  callable(array<mixed>): T  $map
+     * @return T
+     *
+     * @throws RequestException when GLEIF answered with an error (e.g. 404 for a missing parent)
+     * @throws RuntimeException when the response has no `data` object
+     */
+    protected static function mapOne(Response $response, callable $map): mixed
+    {
+        $response->throw();
+
+        $data = $response->json('data');
+
+        if (! is_array($data)) {
+            throw new RuntimeException('Invalid response data');
+        }
+
+        return $map($data);
     }
 }

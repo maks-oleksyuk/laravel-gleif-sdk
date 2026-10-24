@@ -4,22 +4,13 @@ declare(strict_types=1);
 
 namespace Oleksyuk\Gleif\Requests\EntityLegalForms;
 
-use Oleksyuk\Gleif\Concerns\HasGleifCache;
-use Oleksyuk\Gleif\Concerns\MapsResponseData;
 use Oleksyuk\Gleif\Data\EntityLegalForm;
-use Saloon\CachePlugin\Contracts\Cacheable;
-use Saloon\Enums\Method;
-use Saloon\Http\Request;
+use Oleksyuk\Gleif\GleifRequest;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-final class AllEntityLegalForms extends Request implements Cacheable, Paginatable
+final class AllEntityLegalForms extends GleifRequest implements Paginatable
 {
-    use HasGleifCache;
-    use MapsResponseData;
-
-    protected Method $method = Method::GET;
-
     public function __construct(
         private readonly ?int $pageSize = null,
         private readonly ?int $pageNumber = null,

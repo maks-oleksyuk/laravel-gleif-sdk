@@ -66,19 +66,19 @@ final readonly class RelationshipRecord
             // Relationship
             relationshipStartNode: $startNode,
             relationshipEndNode: $endNode,
-            relationshipType: self::asString($data, 'attributes.relationship.type') ?: null,
-            relationshipStatus: self::asString($data, 'attributes.relationship.status') ?: null,
+            relationshipType: self::asNullableString($data, 'attributes.relationship.type'),
+            relationshipStatus: self::asNullableString($data, 'attributes.relationship.status'),
             relationshipPeriods: $periods,
 
             // Registration
             registrationInitialRegistrationDate: self::asDate($data, 'attributes.registration.initialRegistrationDate'),
             registrationLastUpdateDate: self::asDate($data, 'attributes.registration.lastUpdateDate'),
-            registrationStatus: self::asString($data, 'attributes.registration.status') ?: null,
+            registrationStatus: self::asNullableString($data, 'attributes.registration.status'),
             registrationNextRenewalDate: self::asDate($data, 'attributes.registration.nextRenewalDate'),
-            registrationManagingLou: self::asString($data, 'attributes.registration.managingLou') ?: null,
-            registrationCorroborationLevel: self::asString($data, 'attributes.registration.corroborationLevel') ?: null,
-            registrationCorroborationDocuments: self::asString($data, 'attributes.registration.corroborationDocuments') ?: null,
-            registrationCorroborationReference: self::asString($data, 'attributes.registration.corroborationReference') ?: null,
+            registrationManagingLou: self::asNullableString($data, 'attributes.registration.managingLou'),
+            registrationCorroborationLevel: self::asNullableString($data, 'attributes.registration.corroborationLevel'),
+            registrationCorroborationDocuments: self::asNullableString($data, 'attributes.registration.corroborationDocuments'),
+            registrationCorroborationReference: self::asNullableString($data, 'attributes.registration.corroborationReference'),
 
             extension: $extension,
         );

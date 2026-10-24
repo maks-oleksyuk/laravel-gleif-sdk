@@ -4,25 +4,16 @@ declare(strict_types=1);
 
 namespace Oleksyuk\Gleif\Requests\LeiRecords\Lvl1Information;
 
-use Oleksyuk\Gleif\Concerns\HasGleifCache;
-use Oleksyuk\Gleif\Concerns\MapsResponseData;
 use Oleksyuk\Gleif\Data\LeiRecord;
 use Oleksyuk\Gleif\Enums\EntityCategory;
 use Oleksyuk\Gleif\Enums\PolicyConformityFlag;
 use Oleksyuk\Gleif\Enums\RegistrationStatus;
-use Saloon\CachePlugin\Contracts\Cacheable;
-use Saloon\Enums\Method;
-use Saloon\Http\Request;
+use Oleksyuk\Gleif\GleifRequest;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 
-final class AllLeiRecords extends Request implements Cacheable, Paginatable
+final class AllLeiRecords extends GleifRequest implements Paginatable
 {
-    use HasGleifCache;
-    use MapsResponseData;
-
-    protected Method $method = Method::GET;
-
     /**
      * @param  string[]  $lei
      */

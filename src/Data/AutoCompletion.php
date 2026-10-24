@@ -22,13 +22,11 @@ final readonly class AutoCompletion
      */
     public static function fromResponse(array $data): self
     {
-        $id = self::asString($data, 'id');
-
         return new self(
-            id: $id ?: null,
+            id: self::asNullableString($data, 'id'),
             value: self::asString($data, 'attributes.value'),
-            highlighting: self::asString($data, 'attributes.highlighting') ?: null,
-            lei: self::asString($data, 'relationships.lei-records.data.id') ?: null,
+            highlighting: self::asNullableString($data, 'attributes.highlighting'),
+            lei: self::asNullableString($data, 'relationships.lei-records.data.id'),
         );
     }
 }

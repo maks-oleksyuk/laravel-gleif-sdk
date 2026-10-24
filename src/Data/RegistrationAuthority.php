@@ -39,11 +39,11 @@ final readonly class RegistrationAuthority
         return new self(
             id: self::asString($data, 'id'),
             code: self::asString($data, 'attributes.code'),
-            internationalName: self::asString($data, 'attributes.internationalName') ?: null,
-            localName: self::asString($data, 'attributes.localName') ?: null,
-            internationalOrganizationName: self::asString($data, 'attributes.internationalOrganizationName') ?: null,
-            localOrganizationName: self::asString($data, 'attributes.localOrganizationName') ?: null,
-            website: self::asString($data, 'attributes.website') ?: null,
+            internationalName: self::asNullableString($data, 'attributes.internationalName'),
+            localName: self::asNullableString($data, 'attributes.localName'),
+            internationalOrganizationName: self::asNullableString($data, 'attributes.internationalOrganizationName'),
+            localOrganizationName: self::asNullableString($data, 'attributes.localOrganizationName'),
+            website: self::asNullableString($data, 'attributes.website'),
             jurisdictions: $jurisdictions,
         );
     }

@@ -32,8 +32,8 @@ final readonly class RegistrationAgent
         return new self(
             id: self::asString($data, 'id'),
             name: self::asString($data, 'attributes.name'),
-            lei: self::asString($data, 'attributes.lei') ?: null,
-            leiIssuer: self::asString($data, 'attributes.leiIssuer') ?: null,
+            lei: self::asNullableString($data, 'attributes.lei'),
+            leiIssuer: self::asNullableString($data, 'attributes.leiIssuer'),
             websites: $websites,
         );
     }

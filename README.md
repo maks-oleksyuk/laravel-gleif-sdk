@@ -31,7 +31,7 @@ $record = Gleif::leiRecord()->find('984500A8D612DCC67997')->dto();
 echo $record->entityLegalName['name']; // Global Legal Entity Identifier Foundation
 ```
 
-Every method returns a Saloon `Response`: call `->dto()` for typed objects from `Oleksyuk\Gleif\Data`, or `->json()` for the raw payload. On an error response `->dto()` throws Saloon's `RequestException` instead of mapping it: e.g. `NotFoundException` when a related record doesn't exist (an entity without a direct parent) or `BadRequestException` for a `pageSize` above 200. An empty ID throws `InvalidArgumentException` before anything is sent. The facade proxies to `Oleksyuk\Gleif\GleifConnector`, a container singleton, which can be injected instead.
+Every method returns a Saloon `Response`: call `->dto()` for typed objects from `Oleksyuk\Gleif\Data`, or `->json()` for the raw payload. On an error response `->dto()` throws Saloon's `RequestException` instead of mapping it: e.g. `NotFoundException` when a related record doesn't exist (an entity without a direct parent) or `BadRequestException` for a `pageSize` above 200. An empty, `.` or `..` ID throws `InvalidArgumentException` before anything is sent. The facade proxies to `Oleksyuk\Gleif\GleifConnector`, which can be injected instead. It is scoped, so a mock client or header added to it doesn't leak into the next Octane request or queued job.
 
 ### Covered APIs
 
@@ -50,7 +50,7 @@ Every method returns a Saloon `Response`: call `->dto()` for typed objects from 
 | `officialOrganizationalRole()` | Official organizational roles (OOR)                                          |
 | `registrationAuthority()`      | Registration authorities                                                     |
 | `registrationAgent()`          | Registration agents                                                          |
-| `export()`                     | Export of 1–5,000 LEI records (`csv`, `xlsx`, `json`, `xml`)                 |
+| `export()`                     | Export of 1–5,000 LEI records in an `ExportFormat` (CSV, XLSX, JSON, XML)    |
 
 ### Searching
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Oleksyuk\Gleif\Requests\Export;
 
 use InvalidArgumentException;
+use Oleksyuk\Gleif\Enums\ExportFormat;
 use Saloon\Enums\Method;
 use Saloon\Http\SoloRequest;
 
@@ -18,13 +19,12 @@ final class Export extends SoloRequest
     private readonly array $lei;
 
     /**
-     * @param  'csv'|'xlsx'|'json'|'xml'  $format
      * @param  string[]  $lei
      *
      * @throws InvalidArgumentException when there are no LEIs or more than 5,000
      */
     public function __construct(
-        private readonly string $format,
+        private readonly ExportFormat $format,
         array $lei,
     ) {
         $this->lei = array_values(array_unique($lei));
@@ -37,7 +37,7 @@ final class Export extends SoloRequest
 
     public function resolveEndpoint(): string
     {
-        return 'https://api.gleif.org/export/v1/lei-records.'.rawurlencode($this->format);
+        return 'https://api.gleif.org/export/v1/lei-records.'.$this->format->value;
     }
 
     protected function defaultQuery(): array

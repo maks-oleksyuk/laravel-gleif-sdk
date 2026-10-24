@@ -22,6 +22,7 @@ use Oleksyuk\Gleif\Data\ReportingException;
 use Oleksyuk\Gleif\Data\VLeiIssuer;
 use Oleksyuk\Gleif\Enums\AutoCompletionField;
 use Oleksyuk\Gleif\Enums\EntityCategory;
+use Oleksyuk\Gleif\Enums\ExportFormat;
 use Oleksyuk\Gleif\Enums\ModificationType;
 use Oleksyuk\Gleif\Enums\PolicyConformityFlag;
 use Oleksyuk\Gleif\Enums\RecordType;
@@ -151,13 +152,13 @@ test('unset and empty filters are dropped, while "0" is sent', function (): void
     expect($response->getPsrRequest()->getUri()->getQuery())->toBe('filter%5Bfulltext%5D=0');
 });
 
-test('an empty path value is rejected instead of hitting the parent endpoint', function (Closure $call): void {
+test('an empty, "." or ".." path value is rejected instead of hitting another endpoint', function (Closure $call): void {
     $call(new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['data' => []])])));
 })->with([
     'find()' => [fn (GleifConnector $gleif): mixed => $gleif->leiRecord()->find('')],
     'nested path' => [fn (GleifConnector $gleif): mixed => $gleif->leiRecord()->isins('')],
-    // @phpstan-ignore argument.type (deliberately outside the documented formats)
-    'export format' => [fn (GleifConnector $gleif): mixed => $gleif->export()->leiRecords('', ['A'])],
+    '"." as the ID' => [fn (GleifConnector $gleif): mixed => $gleif->leiRecord()->find('.')],
+    '".." in a nested path' => [fn (GleifConnector $gleif): mixed => $gleif->leiIssuer()->jurisdictions('..')],
 ])->throws(InvalidArgumentException::class, 'GLEIF path values must not be empty');
 
 test('a successful list response without data maps to no DTOs', function (): void {
@@ -187,15 +188,21 @@ test('an error response throws instead of mapping to DTOs', function (Closure $c
 test('export() downloads LEI records from the export API', function (): void {
     $mockClient = new MockClient(['*' => MockResponse::make("LEI,Name\nX,Y\n")]);
 
-    $response = new GleifConnector()->withMockClient($mockClient)->export()->leiRecords('csv', ['A', 'B', 'A']);
+    $response = new GleifConnector()->withMockClient($mockClient)->export()->leiRecords(ExportFormat::Csv, ['A', 'B', 'A']);
 
     expect(urldecode((string) $response->getPsrRequest()->getUri()))->toBe('https://api.gleif.org/export/v1/lei-records.csv?filter[lei]=A,B&page[size]=2')
         ->and($response->body())->toBe("LEI,Name\nX,Y\n");
 });
 
 test('export() refuses an empty or oversized LEI list instead of exporting the wrong records', function (array $lei): void {
-    new GleifConnector()->export()->leiRecords('csv', array_filter($lei, is_string(...)));
+    new GleifConnector()->export()->leiRecords(ExportFormat::Csv, array_filter($lei, is_string(...)));
 })->with([
     'no LEIs' => [[]],
     'more than 5,000 LEIs' => [array_map(strval(...), range(1, 5001))],
 ])->throws(InvalidArgumentException::class, 'GLEIF exports 1 to 5000 LEIs at a time');
+
+test('a path value with dots, but not a dot segment, is sent as is', function (): void {
+    $connector = new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['data' => []])]));
+
+    expect($connector->registrationAgent()->find('X.')->getPsrRequest()->getUri()->getPath())->toBe('/api/v1/registration-agents/X.');
+});
