@@ -41,9 +41,9 @@ jobs:
       matrix:
         command:
           - { name: '📦 Composer', command: 'lint:composer' }
-          - { name: '🔍 PHPStan', command: 'lint:phpstan -- --no-progress --error-format=github' }
-          - { name: '🧽 Pint', command: "lint:pint -- --format=checkstyle | sed -n '/^<?xml/,$p' | cs2pr" }
-          - { name: '🏠 Rector', command: 'lint:rector -- --no-progress-bar --output-format=github' }
+          - { name: '🔍 PHPStan', command: 'lint:phpstan -- --no-progress' }
+          - { name: '🧽 Pint', command: "lint:pint -- --format=checkstyle | sed -n '/^<?xml/,$p' | cs2pr --colorize" }
+          - { name: '🏠 Rector', command: 'lint:rector -- --no-progress-bar' }
 
     steps:
       - name: '🛎 Checkout'
@@ -68,6 +68,8 @@ jobs:
       matrix:
         php: ['8.4', '8.5']
         deps: [highest, lowest]
+        include:
+          - { php: '8.5', deps: highest, coverage: true }
 
     steps:
       - name: '🛎 Checkout'
@@ -80,20 +82,31 @@ jobs:
         with:
           php: ${{ matrix.php }}
           prefer-lowest: ${{ matrix.deps == 'lowest' }}
+          coverage: ${{ matrix.coverage && 'xdebug' || 'none' }}
 
       - name: '🔬 Run tests'
-        run: task test -- --ci
+        run: task ${{ matrix.coverage && 'test:coverage' || 'test' }} -- --ci
 
-  quality:
-    name: '♻️ Test | ${{ matrix.command.name }}'
+      - name: '☂️ Upload coverage to Codecov'
+        if: matrix.coverage
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: maks-oleksyuk/laravel-gleif-sdk
+          directory: ./build/report
+
+      - name: '☂️ Upload test results to Codecov'
+        if: matrix.coverage
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: maks-oleksyuk/laravel-gleif-sdk
+          directory: ./build/report
+          report_type: test_results
+
+  types:
+    name: '♻️ Test | 🏷️ Types'
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        command:
-          - { name: '🧮 Coverage', command: 'test:coverage -- --ci', coverage: xdebug, report: true }
-          - { name: '🏷️ Types', command: 'test:types', coverage: none, report: false }
 
     steps:
       - name: '🛎 Checkout'
@@ -103,25 +116,8 @@ jobs:
 
       - name: '⚙️ Prepare environment'
         uses: ./.github/actions/setup # zizmor: ignore[self-repository] -- conflicts with .gitattributes export-ignore
-        with:
-          coverage: ${{ matrix.command.coverage }}
 
-      - name: '${{ matrix.command.name }} tests'
-        run: task ${{ matrix.command.command }}
-
-      - name: '☂️ Upload coverage to Codecov'
-        if: matrix.command.report
-        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: maks-oleksyuk/laravel-gleif-sdk
-          directory: ./build/report
-
-      - name: '☂️ Upload test results to Codecov'
-        if: matrix.command.report
-        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: maks-oleksyuk/laravel-gleif-sdk
-          directory: ./build/report
-          report_type: test_results
+      - name: '🏷️ Types tests'
+        run: task test:types
+        env:
+          FORCE_COLOR: '1' # the type coverage summary ignores --colors=always
