@@ -65,6 +65,8 @@ tasks:
       - l:co
     cmds:
       - task: composer
+        vars: { CLI_ARGS: '-V' }
+      - task: composer
         vars: { CLI_ARGS: 'validate --no-check-version --no-check-publish --strict' }
 
   lint:pint:
@@ -73,6 +75,8 @@ tasks:
       - l:p
       - l:pint
     cmds:
+      - task: pint
+        vars: { CLI_ARGS: '-V' }
       - task: pint
         vars: { CLI_ARGS: '--test {{.CLI_ARGS}}' }
 
@@ -83,6 +87,8 @@ tasks:
       - l:stan
     cmds:
       - task: phpstan
+        vars: { CLI_ARGS: '-V' }
+      - task: phpstan
         vars: { CLI_ARGS: 'analyze {{.CLI_ARGS}}' }
 
   lint:rector:
@@ -90,6 +96,8 @@ tasks:
     aliases:
       - l:r
     cmds:
+      - task: rector
+        vars: { CLI_ARGS: '-V' }
       - task: rector
         vars: { CLI_ARGS: '--dry-run {{.CLI_ARGS}}' }
 
@@ -111,12 +119,16 @@ tasks:
       - f:pint
     cmds:
       - task: pint
+        vars: { CLI_ARGS: '-V' }
+      - task: pint
 
   fix:rector:
     desc: 'Fix Rector issues.'
     aliases:
       - f:r
     cmds:
+      - task: rector
+        vars: { CLI_ARGS: '-V' }
       - task: rector
 
   # Testing:
@@ -126,6 +138,8 @@ tasks:
     aliases:
       - t
     cmds:
+      - task: pest
+        vars: { CLI_ARGS: '--version' }
       - task: pest
         vars: { CLI_ARGS: '--compact {{.CLI_ARGS}}' }
 
@@ -138,15 +152,20 @@ tasks:
       XDEBUG_MODE: coverage
     cmds:
       - task: pest
+        vars: { CLI_ARGS: '--version' }
+      - task: pest
         vars:
           CLI_ARGS: '--compact --coverage --min=100 --coverage-html build/coverage --coverage-clover build/report/coverage.xml --log-junit build/report/junit.xml {{.CLI_ARGS}}'
 
   test:types:
-    desc: 'Require 100% type coverage.'
+    desc: 'Ensure all methods and properties have type declarations (100% type coverage).'
     aliases:
       - t:t
       - t:types
+      - test:t
     cmds:
+      - task: pest
+        vars: { CLI_ARGS: '--version' }
       - task: pest
         vars: { CLI_ARGS: '--type-coverage --compact --min=100 {{.CLI_ARGS}}' }
 
