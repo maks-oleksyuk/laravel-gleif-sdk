@@ -83,7 +83,36 @@ foreach ($paginator->items() as $item) {
 
 ### Caching
 
-GLEIF publishes a new [Golden Copy](//www.gleif.org/en/lei-data/gleif-golden-copy) three times a day, so responses are cached in your Laravel cache until the next refresh window (02:15, 10:15 and 18:15 UTC). That includes `404` answers, such as an unknown LEI or an entity without a parent: they don't change in between either. To skip a request that can only answer `404`, check the record first: `$record->hasDirectParent` and `$record->hasUltimateParent` tell whether GLEIF links a parent record or reports an exception instead. Pick a dedicated store via `.env`:
+GLEIF publishes a new [Golden Copy](//www.gleif.org/en/lei-data/gleif-golden-copy) three times a day (the 00:00, 08:00 and 16:00 UTC copies come out at 02:00, 10:00 and 18:00 UTC), so responses are cached in your Laravel cache until the next publication. The API picks up a new copy hours later, though: a LEI record answer from an older copy than the latest published one (its `meta.goldenCopy.publishDate`) is cached for 15 minutes only, so the new data shows up soon after the API has it:
+
+```mermaid
+gantt
+    title One day of GLEIF data in UTC, with the API 3 hours behind the files
+    dateFormat HH:mm
+    axisFormat %H:%M
+
+    section Golden Copy
+    00 UTC copy → files out        : 00:00, 2h
+    08 UTC copy → files out        : 08:00, 2h
+    16 UTC copy → files out        : 16:00, 2h
+
+    section GLEIF API
+    serves the previous 16 UTC copy : done, 00:00, 5h
+    serves the 00 UTC copy          : done, 05:00, 8h
+    serves the 08 UTC copy          : done, 13:00, 8h
+    serves the 16 UTC copy          : done, 21:00, 3h
+
+    section Cache of one LEI
+    cached until the 02 UTC files  : active, 00:00, 2h
+    API behind → asks every 15 min : crit, 02:00, 3h
+    cached until the 10 UTC files  : active, 05:00, 5h
+    API behind → asks every 15 min : crit, 10:00, 3h
+    cached until the 18 UTC files  : active, 13:00, 5h
+    API behind → asks every 15 min : crit, 18:00, 3h
+    cached until the 02 UTC files  : active, 21:00, 3h
+```
+
+GLEIF doesn't say when the API picks up a copy; in practice it takes hours after the files. Caching also covers `404` answers, such as an unknown LEI or an entity without a parent: they don't change in between either. To skip a request that can only answer `404`, check the record first: `$record->hasDirectParent` and `$record->hasUltimateParent` tell whether GLEIF links a parent record or reports an exception instead. Pick a dedicated store via `.env`:
 
 ```dotenv
 GLEIF_CACHE_STORE=redis

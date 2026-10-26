@@ -8,6 +8,7 @@ use Carbon\CarbonImmutable;
 use DateTimeImmutable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use JsonException;
 use RuntimeException;
 use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Contracts\Driver;
@@ -32,9 +33,17 @@ abstract class GleifRequest extends Request implements Cacheable
     protected Method $method = Method::GET;
 
     /**
-     * GLEIF answers 404 for a record that doesn't exist and for an entity without a parent.
-     * That answer only changes with the next Golden Copy as well, so it is cached like a 200:
-     * the cache plugin skips failed responses, and a cache hit doesn't count against the rate limit.
+     * How long to cache an answer from a Golden Copy older than the latest publication:
+     * the API picks up a new copy hours after it is published, so it is asked again soon.
+     */
+    private const int STALE_COPY_TTL = 15 * 60;
+
+    /**
+     * The cache plugin stores successful responses until the next publication. On top of that:
+     *  - a 404 (a record that doesn't exist, an entity without a parent) only changes with the next
+     *    Golden Copy as well, so it is cached the same way: the plugin skips failed responses;
+     *  - an answer from an outdated copy (meta.goldenCopy.publishDate) is cached for STALE_COPY_TTL only.
+     * A cache hit doesn't count against the rate limit.
      */
     public function boot(PendingRequest $pendingRequest): void
     {
@@ -43,12 +52,21 @@ abstract class GleifRequest extends Request implements Cacheable
         }
 
         $pendingRequest->middleware()->onResponse(function (Response $response): void {
-            if ($response->status() !== 404 || $response->isCached()) {
+            if ($response->isCached()) {
+                return;
+            }
+
+            $ttl = match (true) {
+                $response->status() === 404 => $this->cacheExpiryInSeconds(),
+                $response->successful() && $this->isFromStaleCopy($response) => self::STALE_COPY_TTL,
+                default => null,
+            };
+
+            if ($ttl === null) {
                 return;
             }
 
             $pendingRequest = $response->getPendingRequest();
-            $ttl = $this->cacheExpiryInSeconds();
 
             $this->resolveCacheDriver()->set(
                 key: CacheKeyHelper::createHashed($pendingRequest, $this->cacheKey($pendingRequest)),
@@ -58,29 +76,40 @@ abstract class GleifRequest extends Request implements Cacheable
     }
 
     /**
+     * Until the next Golden Copy publication: the 00:00, 08:00 and 16:00 UTC copies are published two hours later.
+     *
      * @see https://gleif.org/en/lei-data/gleif-golden-copy
      */
     public function cacheExpiryInSeconds(): int
     {
         $now = CarbonImmutable::now('UTC');
 
-        // This ensures that if we hit the API right in the publication window,
-        // we don't accidentally cache old data if the publication is slightly delayed.
-        $bufferMinutes = 15;
+        return (int) $now->diffInSeconds($this->latestPublishedCopy($now)->addHours(8 + 2));
+    }
 
-        $publications = [
-            $now->setTime(2, $bufferMinutes),
-            $now->setTime(10, $bufferMinutes),
-            $now->setTime(18, $bufferMinutes),
-        ];
+    /**
+     * The date (meta.goldenCopy.publishDate) of the newest copy whose files are already out.
+     */
+    private function latestPublishedCopy(CarbonImmutable $now): CarbonImmutable
+    {
+        $copyDate = $now->subHours(2);
 
-        foreach ($publications as $time) {
-            if ($now->lt($time)) {
-                return (int) $now->diffInSeconds($time);
-            }
+        return $copyDate->startOfDay()->addHours(intdiv($copyDate->hour, 8) * 8);
+    }
+
+    /**
+     * Only LEI record responses carry the copy's publish date; the rest (reference data, a 404)
+     * can't tell, so they are cached until the next publication.
+     */
+    private function isFromStaleCopy(Response $response): bool
+    {
+        try {
+            $publishDate = $response->json('meta.goldenCopy.publishDate');
+        } catch (JsonException) {
+            return false;
         }
 
-        return (int) $now->diffInSeconds($now->addDay()->setTime(2, $bufferMinutes));
+        return is_string($publishDate) && CarbonImmutable::parse($publishDate)->lt($this->latestPublishedCopy(CarbonImmutable::now('UTC')));
     }
 
     public function resolveCacheDriver(): Driver
