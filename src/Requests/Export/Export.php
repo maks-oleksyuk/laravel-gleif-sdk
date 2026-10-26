@@ -8,20 +8,16 @@ use InvalidArgumentException;
 use Oleksyuk\Gleif\Enums\ExportFormat;
 use Saloon\Enums\Method;
 use Saloon\Http\SoloRequest;
-use Saloon\Traits\Plugins\HasTimeout;
 
 final class Export extends SoloRequest
 {
-    use HasTimeout;
-
-    private const int MAX_LEIS = 5000;
+    /**
+     * The LEIs travel in the URL (23 bytes each, with the encoded comma), and GLEIF answers
+     * 414 URI Too Long past ~8 KB: around 355 LEIs. 300 leaves room for the rest of the URL.
+     */
+    private const int MAX_LEIS = 300;
 
     protected Method $method = Method::GET;
-
-    /**
-     * Up to 5,000 records, e.g. as XLSX, can take longer than Saloon's 30-second default.
-     */
-    protected int $requestTimeout = 120;
 
     /** @var list<string> */
     private readonly array $lei;
@@ -29,7 +25,7 @@ final class Export extends SoloRequest
     /**
      * @param  string[]  $lei
      *
-     * @throws InvalidArgumentException when there are no LEIs or more than 5,000
+     * @throws InvalidArgumentException when there are no LEIs or more than 300
      */
     public function __construct(
         private readonly ExportFormat $format,
@@ -37,7 +33,7 @@ final class Export extends SoloRequest
     ) {
         $this->lei = array_values(array_unique($lei));
 
-        // Without a LEI filter GLEIF exports an arbitrary first page of records instead of failing.
+        // Without a LEI filter, GLEIF exports an arbitrary first page of records instead of failing.
         if ($this->lei === [] || count($this->lei) > self::MAX_LEIS) {
             throw new InvalidArgumentException('GLEIF exports 1 to '.self::MAX_LEIS.' LEIs at a time, got '.count($this->lei).'.');
         }

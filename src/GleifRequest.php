@@ -7,6 +7,7 @@ namespace Oleksyuk\Gleif;
 use Carbon\CarbonImmutable;
 use DateTimeImmutable;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use RuntimeException;
 use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Contracts\Driver;
@@ -85,7 +86,7 @@ abstract class GleifRequest extends Request implements Cacheable
     public function resolveCacheDriver(): Driver
     {
         /** @var string|null $store */
-        $store = config('gleif.cache.store');
+        $store = Config::get('gleif.cache.store');
 
         return new LaravelCacheDriver(Cache::store($store));
     }

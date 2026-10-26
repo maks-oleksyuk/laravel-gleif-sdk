@@ -50,7 +50,7 @@ Every method returns a Saloon `Response`: call `->dto()` for typed objects from 
 | `officialOrganizationalRole()` | Official organizational roles (OOR)                                          |
 | `registrationAuthority()`      | Registration authorities                                                     |
 | `registrationAgent()`          | Registration agents                                                          |
-| `export()`                     | Export of 1–5,000 LEI records in an `ExportFormat` (CSV, XLSX, JSON, XML)    |
+| `export()`                     | Export of 1–300 LEI records in an `ExportFormat` (CSV, XLSX, JSON, XML)      |
 
 ### Searching
 

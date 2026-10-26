@@ -24,7 +24,7 @@ final class GleifServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/gleif.php' => config_path('gleif.php'),
+                __DIR__.'/../config/gleif.php' => $this->app->configPath('gleif.php'),
             ], 'gleif-config');
         }
     }

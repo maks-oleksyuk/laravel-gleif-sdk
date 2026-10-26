@@ -34,7 +34,11 @@ final class LeiRecordResource extends BaseResource
 {
     // Level 1 — LEI Records
 
-    /** @param string[] $lei */
+    /**
+     * @param  string[]  $lei  up to 300 LEIs
+     *
+     * @throws \InvalidArgumentException when there are more than 300 LEIs
+     */
     public function all(
         array $lei = [],
         ?string $bic = null,

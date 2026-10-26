@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Oleksyuk\Gleif;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
 use Oleksyuk\Gleif\Resources\AutoCompletionResource;
 use Oleksyuk\Gleif\Resources\CountryResource;
@@ -43,7 +45,7 @@ final class GleifConnector extends Connector implements HasPagination
 
     /**
      * Requests list every filter; unset ones are dropped here, while "0" is a real value.
-     * An empty, "." or ".." path value (e.g. find('')) would silently hit another endpoint instead:
+     * An empty, "." or ".." path value (e.g., find('')) would silently hit another endpoint instead:
      * rawurlencode() leaves dots alone, and the server resolves dot segments.
      *
      * @throws InvalidArgumentException when a path value is empty, "." or ".."
@@ -148,7 +150,7 @@ final class GleifConnector extends Connector implements HasPagination
             }
 
             /**
-             * Follows the links.next GLEIF returns. Starting with page[cursor]=* switches lei-records
+             * Follows the `links.next` GLEIF returns. Starting with page[cursor]=* switches lei-records
              * to cursor pagination, which isn't capped at 10,000 results like page[number] is;
              * other endpoints ignore it and link to page[number] instead.
              */
@@ -189,7 +191,7 @@ final class GleifConnector extends Connector implements HasPagination
 
     protected function defaultSender(): Sender
     {
-        $sender = resolve('gleif.sender');
+        $sender = App::make('gleif.sender');
 
         if (! $sender instanceof Sender) {
             throw new \RuntimeException('Gleif sender not found in container');
@@ -216,7 +218,7 @@ final class GleifConnector extends Connector implements HasPagination
     protected function resolveRateLimitStore(): RateLimitStore
     {
         /** @var string|null $store */
-        $store = config('gleif.cache.store');
+        $store = Config::get('gleif.cache.store');
 
         return new LaravelCacheStore(Cache::store($store));
     }

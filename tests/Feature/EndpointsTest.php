@@ -185,22 +185,25 @@ test('an error response throws instead of mapping to DTOs', function (Closure $c
     'single, 404' => [fn (GleifConnector $gleif): Response => $gleif->leiRecord()->directParent('X'), 404, NotFoundException::class],
 ]);
 
-test('export() downloads LEI records from the export API with a longer timeout', function (): void {
+test('export() downloads LEI records from the export API', function (): void {
     $mockClient = new MockClient(['*' => MockResponse::make("LEI,Name\nX,Y\n")]);
 
     $response = new GleifConnector()->withMockClient($mockClient)->export()->leiRecords(ExportFormat::Csv, ['A', 'B', 'A']);
 
     expect(urldecode((string) $response->getPsrRequest()->getUri()))->toBe('https://api.gleif.org/export/v1/lei-records.csv?filter[lei]=A,B&page[size]=2')
-        ->and($response->body())->toBe("LEI,Name\nX,Y\n")
-        ->and($response->getPendingRequest()->config()->get('timeout'))->toBe(120.0);
+        ->and($response->body())->toBe("LEI,Name\nX,Y\n");
 });
 
 test('export() refuses an empty or oversized LEI list instead of exporting the wrong records', function (array $lei): void {
     new GleifConnector()->export()->leiRecords(ExportFormat::Csv, array_filter($lei, is_string(...)));
 })->with([
     'no LEIs' => [[]],
-    'more than 5,000 LEIs' => [array_map(strval(...), range(1, 5001))],
-])->throws(InvalidArgumentException::class, 'GLEIF exports 1 to 5000 LEIs at a time');
+    'more than 300 LEIs' => [array_map(strval(...), range(1, 301))],
+])->throws(InvalidArgumentException::class, 'GLEIF exports 1 to 300 LEIs at a time');
+
+test('leiRecord()->all() refuses more LEIs than fit in the URL', function (): void {
+    new GleifConnector()->leiRecord()->all(lei: array_map(strval(...), range(1, 301)));
+})->throws(InvalidArgumentException::class, 'GLEIF filters by up to 300 LEIs at a time, got 301.');
 
 test('a path value with dots, but not a dot segment, is sent as is', function (): void {
     $connector = new GleifConnector()->withMockClient(new MockClient(['*' => MockResponse::make(['data' => []])]));

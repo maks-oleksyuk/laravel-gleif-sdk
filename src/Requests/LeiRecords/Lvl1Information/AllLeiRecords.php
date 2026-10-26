@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Oleksyuk\Gleif\Requests\LeiRecords\Lvl1Information;
 
+use InvalidArgumentException;
 use Oleksyuk\Gleif\Data\LeiRecord;
 use Oleksyuk\Gleif\Enums\EntityCategory;
 use Oleksyuk\Gleif\Enums\PolicyConformityFlag;
@@ -15,7 +16,14 @@ use Saloon\PaginationPlugin\Contracts\Paginatable;
 final class AllLeiRecords extends GleifRequest implements Paginatable
 {
     /**
+     * The LEIs travel in the URL, and GLEIF answers 414 URI Too Long past ~355 of them (see Export).
+     */
+    private const int MAX_LEIS = 300;
+
+    /**
      * @param  string[]  $lei
+     *
+     * @throws InvalidArgumentException when there are more than 300 LEIs
      */
     public function __construct(
         private readonly array $lei = [],
@@ -32,7 +40,11 @@ final class AllLeiRecords extends GleifRequest implements Paginatable
         private readonly ?string $sort = null,
         private readonly ?int $pageSize = null,
         private readonly ?int $pageNumber = null,
-    ) {}
+    ) {
+        if (count($this->lei) > self::MAX_LEIS) {
+            throw new InvalidArgumentException('GLEIF filters by up to '.self::MAX_LEIS.' LEIs at a time, got '.count($this->lei).'.');
+        }
+    }
 
     public function resolveEndpoint(): string
     {
