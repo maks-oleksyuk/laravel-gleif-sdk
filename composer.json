@@ -35,16 +35,16 @@
         "saloonphp/saloon": "^4.5"
     },
     "require-dev": {
-        "larastan/larastan": "^3.13.1",
+        "larastan/larastan": "^3.14.0",
         "laravel/pint": "^1.32.1",
         "orchestra/testbench": "^11.3",
-        "pestphp/pest": "^5.3.3",
-        "pestphp/pest-plugin-phpstan": "^5.2.2",
+        "pestphp/pest": "^5.3.5",
+        "pestphp/pest-plugin-phpstan": "^5.3.1",
         "pestphp/pest-plugin-rector": "^5.0.6",
-        "pestphp/pest-plugin-type-coverage": "^5.0.3",
+        "pestphp/pest-plugin-type-coverage": "^5.1.0",
         "phpstan/extension-installer": "^1.4.3",
         "phpstan/phpstan-deprecation-rules": "^2.0.5",
-        "rector/rector": "^2.7"
+        "rector/rector": "^2.8.4"
     },
     "minimum-stability": "stable",
     "autoload": {

@@ -105,7 +105,7 @@ jobs:
           report_type: test_results
 
   types:
-    name: '♻️ Test | 🏷️ Types'
+    name: '♻️ Test | 🔤 Types'
     runs-on: ubuntu-latest
 
     steps:
@@ -117,7 +117,7 @@ jobs:
       - name: '⚙️ Prepare environment'
         uses: ./.github/actions/setup # zizmor: ignore[self-repository] -- conflicts with .gitattributes export-ignore
 
-      - name: '🏷️ Types tests'
-        run: task test:types
+      - name: '🔤 Types tests'
+        run: task test:types -- --ci
         env:
           FORCE_COLOR: '1' # the type coverage summary ignores --colors=always
